@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# author: pharesim@nhzcrypto.org
+
 import json
 import urllib
 import urllib2
@@ -7,13 +9,15 @@ import sqlite3
 import sys
 import math
 
+# edit those
 nhzhost     = 'http://127.0.0.1:7776'
-database    = './pool.db'
-poolstart   = 11371711
+database    = './pool.db' # best to use full path
+poolstart   = 11371711 # timestamp in blockchain when your pool started
 poolaccount = '123456789'
-poolphrase  = "A-B_C\\D$E;F\"G'1.2;3/"
+poolphrase  = "A-B_C\\D$E;F\"G'1.2;3/" # escape " and \ with \
 payoutlimit = 100
 feePercent  = 1
+# done
 
 conn = sqlite3.connect(database)
 c = conn.cursor()
