@@ -1,0 +1,13 @@
+CREATE TABLE blocks (
+timestamp NUMERIC,
+block TEXT,
+totalfee NUMERIC,
+UNIQUE (timestamp));
+
+CREATE TABLE accounts (
+blocktime NUMERIC,
+account TEXT,
+percentage NUMERIC,
+amount NUMERIC,
+paid NUMERIC,
+UNIQUE (blocktime, account));
