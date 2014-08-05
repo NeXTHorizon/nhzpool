@@ -49,23 +49,24 @@ def startForging():
 
 def getNew(newBlocks):
     shares = getShares()
-    for block in newBlocks['blockIds']:
-        blockData = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getBlock&block="+block).read())
+    if 'blockIds' in newBlocks:
+        for block in newBlocks['blockIds']:
+            blockData = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getBlock&block="+block).read())
 
-        c.execute(
-            "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
-            (blockData['timestamp'],block,blockData['totalFeeNQT'])
-        )
+            c.execute(
+                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
+                (blockData['timestamp'],block,blockData['totalFeeNQT'])
+            )
 
-        blockFee = float(blockData['totalFeeNQT'])
-        if blockFee > 0:
-            for (account, amount) in shares.items():
-                if account is not poolaccount:
-                    payout = math.floor(blockFee * (amount['percentage']/100))
-                    c.execute(
-                        "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
-                        (blockData['timestamp'],account,amount['percentage'],payout,False)
-                    )
+            blockFee = float(blockData['totalFeeNQT'])
+            if blockFee > 0:
+                for (account, amount) in shares.items():
+                    if account is not poolaccount:
+                        payout = math.floor(blockFee * (amount['percentage']/100))
+                        c.execute(
+                            "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
+                            (blockData['timestamp'],account,amount['percentage'],payout,False)
+                        )
 
     conn.commit()
     return True
