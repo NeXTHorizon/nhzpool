@@ -9,4 +9,4 @@ cat db.txt | sqlite3 pool.db
 Edit variables in pool.py
 
 Cron:
-* * * * * /path/to/pool.py >> /path/to/log
+\* * * * * /path/to/pool.py >> /path/to/log
