@@ -8,23 +8,18 @@ import urllib2
 import sqlite3
 import sys
 import math
+import ConfigParser
 
-# edit those
-nhzhost     = 'http://127.0.0.1:7776'
-database    = './pool.db' # best to use full path
-poolstart   = 11371711 # timestamp in blockchain when your pool started
-poolaccount = '123456789'
-poolphrase  = "A-B_C\\D$E;F\"G'1.2;3/" # escape " and \ with \
-payoutlimit = 100
-feePercent  = 1
-# done
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
 
-conn = sqlite3.connect(database)
+conn = sqlite3.connect(config.get("pool", "database"))
 c = conn.cursor()
+
 
 def main():
     startForging()
-    getNew(json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getAccountBlockIds&account="+poolaccount+"&timestamp="+getTimestamp()).read()))
+    getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
     payout()
     return True
 
@@ -32,16 +27,16 @@ def main():
 def startForging():
     payload = {
         'requestType': 'getForging',
-        'secretPhrase': poolphrase
+        'secretPhrase': config.get("pool", "poolphrase")
     }
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
-    forging = json.loads(opener.open(nhzhost+'/nhz', data=data).read())
+    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
     if 'errorCode' in forging.keys():
         if forging['errorCode'] == 5:
             payload['requestType'] = 'startForging'
             data = urllib.urlencode(payload)
-            forging = json.loads(opener.open(nhzhost+'/nhz', data=data).read())
+            forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
             print "Started forging"
 
     return True
@@ -51,7 +46,7 @@ def getNew(newBlocks):
     shares = getShares()
     if 'blockIds' in newBlocks:
         for block in newBlocks['blockIds']:
-            blockData = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getBlock&block="+block).read())
+            blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block="+block).read())
 
             c.execute(
                 "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
@@ -61,7 +56,7 @@ def getNew(newBlocks):
             blockFee = float(blockData['totalFeeNQT'])
             if blockFee > 0:
                 for (account, amount) in shares.items():
-                    if account is not poolaccount:
+                    if account is not config.get("pool", "poolaccount"):
                         payout = math.floor(blockFee * (amount['percentage']/100))
                         c.execute(
                             "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
@@ -73,28 +68,28 @@ def getNew(newBlocks):
 
 
 def getTimestamp():
-    timestamp = poolstart
+    timestamp = config.get("pool", "poolstart")
 
     c.execute("SELECT timestamp FROM blocks ORDER BY timestamp DESC LIMIT 1;")
     blocks = c.fetchall()
 
-    if len(blocks) > 0 and blocks[0][0] > poolstart:
+    if len(blocks) > 0 and blocks[0][0] > config.get("pool", "poolstart"):
         timestamp = blocks[0][0]
 
     return str(timestamp+1)
 
 
 def getShares():
-    poolAccount = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getAccount&account="+poolaccount).read())
+    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     totalAmount = 0
     if 'guaranteedBalanceNQT' in poolAccount:
         totalAmount  = float(poolAccount['guaranteedBalanceNQT'])
 
-    leasedAmount = { poolaccount: { 'amount': totalAmount } }
+    leasedAmount = { config.get("pool", "poolaccount"): { 'amount': totalAmount } }
 
     if 'lessors' in poolAccount:
         for lessor in poolAccount['lessors']:
-            lessorAccount = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getAccount&account="+lessor).read())
+            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
             leasedAmount[lessor] = { 'amount': float(lessorAccount['guaranteedBalanceNQT']) }
             totalAmount += float(lessorAccount['guaranteedBalanceNQT'])
 
@@ -120,14 +115,14 @@ def payout():
 
     for (account, amount) in pending.items():
         if amount > getLimit():
-            fee     = ((amount*feePercent)/100)
+            fee     = ((amount*config.get("pool", "feePercent"))/100)
             payment = str((amount-fee)-100000000)
             account = str(account)
             fee     = str(fee)
             print "Pay out "+payment+" to "+account+" (keep fee: "+fee+")"
             payload = {
                 'requestType': 'sendMoney',
-                'secretPhrase': poolphrase,
+                'secretPhrase': config.get("pool", "poolphrase"),
                 'recipient': account,
                 'amountNQT': payment,
                 'feeNQT': 100000000,
@@ -135,7 +130,7 @@ def payout():
             }
             opener = urllib2.build_opener(urllib2.HTTPHandler())
             data = urllib.urlencode(payload)
-            content = json.loads(opener.open(nhzhost+'/nhz', data=data).read())
+            content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
             if 'transaction' in content.keys():
                 c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
 
@@ -144,7 +139,7 @@ def payout():
 
 
 def getLimit():
-    return payoutlimit*100000000;
+    return config.get("pool", "payoutlimit")*100000000;
 
 
 if __name__ == "__main__":
