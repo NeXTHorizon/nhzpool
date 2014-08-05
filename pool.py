@@ -97,8 +97,9 @@ def getShares():
             leasedAmount[lessor] = { 'amount': float(lessorAccount['guaranteedBalanceNQT']) }
             totalAmount += float(lessorAccount['guaranteedBalanceNQT'])
 
-    for (account, amount) in leasedAmount.items():
-        leasedAmount[account]['percentage'] = amount['amount'] / (totalAmount/100)
+    if totalAmount > 0:
+        for (account, amount) in leasedAmount.items():
+            leasedAmount[account]['percentage'] = amount['amount'] / (totalAmount/100)
 
     return leasedAmount
 
