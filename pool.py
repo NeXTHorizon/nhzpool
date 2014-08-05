@@ -56,7 +56,7 @@ def getNew(newBlocks):
             "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
             (blockData['timestamp'],block,blockData['totalFeeNQT'])
         )
-        
+
         blockFee = float(blockData['totalFeeNQT'])
         if blockFee > 0:
             for (account, amount) in shares.items():
@@ -83,9 +83,12 @@ def getTimestamp():
     return str(timestamp+1)
 
 
-def getShares():  
-    poolAccount  = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getAccount&account="+poolaccount).read())
-    totalAmount  = float(poolAccount['guaranteedBalanceNQT'])
+def getShares():
+    poolAccount = json.loads(urllib2.urlopen(nhzhost+"/nhz?requestType=getAccount&account="+poolaccount).read())
+    totalAmount = 0
+    if 'guaranteedBalanceNQT' in poolAccount:
+        totalAmount  = float(poolAccount['guaranteedBalanceNQT'])
+
     leasedAmount = { poolaccount: { 'amount': totalAmount } }
 
     if 'lessors' in poolAccount:
@@ -96,7 +99,7 @@ def getShares():
 
     for (account, amount) in leasedAmount.items():
         leasedAmount[account]['percentage'] = amount['amount'] / (totalAmount/100)
-    
+
     return leasedAmount
 
 
