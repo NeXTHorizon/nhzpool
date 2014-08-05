@@ -76,7 +76,7 @@ def getTimestamp():
     if len(blocks) > 0 and blocks[0][0] > config.get("pool", "poolstart"):
         timestamp = blocks[0][0]
 
-    return str(timestamp+1)
+    return str(int(timestamp)+1)
 
 
 def getShares():
