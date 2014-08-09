@@ -26,6 +26,7 @@
         <li><a href="/">Home</a></li>
         <li class="active"><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
+        <li><a href="/payouts">Payouts</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>
@@ -37,15 +38,7 @@
 <h1>Accounts List:</h1>
 </div>
 <div class="col-lg-12">
-<table border="1">
-%for row in rows:
-  <tr>
-  %for col in row:
-    <td>{{col}}</td>
-  %end
-  </tr>
-%end
-</table>
+<p>{{leased}}</p>
 </div>
 </div>  
 </div>

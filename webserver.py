@@ -8,6 +8,7 @@ from bottle import route, run, template, static_file, PasteServer, debug
 import json
 import urllib
 import urllib2
+from pool import getShares
 
 
 config = ConfigParser.RawConfigParser()
@@ -24,12 +25,9 @@ def static(path):
 
 @route('/accounts')
 def accounts():
-    conn = sqlite3.connect(config.get("pool", "database"))
-    c = conn.cursor()
-    c.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
-    result = c.fetchall()
-    c.close()   
-    output = template('accounts', rows=result)
+    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    clean = json.dumps(poolAccount, indent=2)
+    output = template('accounts', leased=clean)
     return output
 
 @route('/blocks')
@@ -45,8 +43,19 @@ def blocks():
     }
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
-    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())   
-    output = template('blocks', rows=result, fg=forging)
+    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+    clean = json.dumps(forging, indent=2)   
+    output = template('blocks', rows=result, fg=clean)
+    return output
+
+@route('/payouts')
+def payouts():
+    conn = sqlite3.connect(config.get("pool", "database"))
+    c = conn.cursor()
+    c.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
+    result = c.fetchall()
+    c.close()   
+    output = template('payouts', rows=result)
     return output
 
    
