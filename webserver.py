@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+# author: brendan@shellshockcomputer.com.au
+
 import sqlite3
 import ConfigParser
 from bottle import route, run, template, static_file, PasteServer, debug
@@ -20,7 +24,7 @@ def static(path):
 
 @route('/accounts')
 def accounts():
-    conn = sqlite3.connect('pool.db')
+    conn = sqlite3.connect(config.get("pool", "database"))
     c = conn.cursor()
     c.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
     result = c.fetchall()
@@ -30,7 +34,7 @@ def accounts():
 
 @route('/blocks')
 def blocks():
-    conn = sqlite3.connect('pool.db')
+    conn = sqlite3.connect(config.get("pool", "database"))
     c = conn.cursor()
     c.execute("SELECT timestamp, block, totalfee FROM blocks")
     result = c.fetchall()
