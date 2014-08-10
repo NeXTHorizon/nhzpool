@@ -8,6 +8,7 @@ from bottle import route, run, template, static_file, PasteServer, debug
 import json
 import urllib
 import urllib2
+import datetime
 from pool import getShares
 
 
@@ -44,7 +45,8 @@ def blocks():
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-    deadline = forging["deadline"]   
+    getdl = forging["deadline"]
+    deadline = str(datetime.timedelta(seconds=getdl))   
     output = template('blocks', rows=result, fg=deadline)
     return output
 
