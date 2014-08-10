@@ -9,7 +9,6 @@ import json
 import urllib
 import urllib2
 import datetime
-from pool import getShares
 
 
 config = ConfigParser.RawConfigParser()
