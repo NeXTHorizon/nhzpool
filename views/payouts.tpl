@@ -35,7 +35,9 @@
 <div class="container">
   
   <div class="text-center">
-<h1>Payouts List:</h1>
+	<div class="page-header">
+		<h1>Payouts List:</h1>
+	</div>
 </div>
 <div class="col-lg-12">
 <table border="1">

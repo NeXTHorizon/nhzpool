@@ -35,10 +35,12 @@
 <div class="container">
   
   <div class="text-center">
-<h1>Block List:</h1>
-<div class="col-lg-12">    
-    <p>Time Till Next Block: {{fg}}</p>
-</div>
+  	<div class="page-header">
+	<h1>Block List:</h1>
+  	</div>
+	<div class="col-lg-12">    
+    <p><strong>Time Till Next Block:</strong> {{fg}}</p>
+	</div>
 <div class="col-lg-12">
 <table border="1">
 %for row in rows:

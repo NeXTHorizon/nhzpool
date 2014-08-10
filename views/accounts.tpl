@@ -35,7 +35,9 @@
 <div class="container">
   
   <div class="text-center">
+  <div class="page-header">
 <h1>Accounts List:</h1>
+</div>
 <div class="col-lg-12">
 <p>{{leased}}</p>
 </div>
