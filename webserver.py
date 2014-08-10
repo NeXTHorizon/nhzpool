@@ -2,17 +2,18 @@
 
 # author: brendan@shellshockcomputer.com.au
 
-import sqlite3
 import ConfigParser
-from bottle import route, run, template, static_file, PasteServer, debug
+from bottle import route, install, run, template, static_file, PasteServer
+from bottle_sqlite import SQLitePlugin
 import json
 import urllib
 import urllib2
 import datetime
 
-
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
+
+install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
 
 @route('/')
 def default():
@@ -31,10 +32,8 @@ def accounts():
     return output
 
 @route('/blocks')
-def blocks():
-    conn = sqlite3.connect(config.get("pool", "database"))
-    c = conn.cursor()
-    c.execute("SELECT timestamp, block, totalfee FROM blocks")
+def blocks(db):
+    c = db.execute("SELECT timestamp, block, totalfee FROM blocks")
     result = c.fetchall()
     c.close()
     payload = {
@@ -50,15 +49,10 @@ def blocks():
     return output
 
 @route('/payouts')
-def payouts():
-    conn = sqlite3.connect(config.get("pool", "database"))
-    c = conn.cursor()
-    c.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
-    result = c.fetchall()
-    c.close()   
+def payouts(db):
+    c = db.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
+    result = c.fetchall()   
     output = template('payouts', rows=result)
     return output
 
-   
-debug(True)
 run(server=PasteServer, port=8888, host='0.0.0.0')
