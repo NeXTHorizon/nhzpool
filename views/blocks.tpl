@@ -14,8 +14,9 @@
   	<div class="page-header">
 	<h1>Block List:</h1>
   	</div>
-	<div class="col-lg-12">    
-    <p><strong>Time Till Next Block:</strong> {{fg}}</p>
+	<div class="col-lg-12">
+	<h4>Estimated Time Until</h4>    
+    <p><strong>Next Block:</strong> {{fg}}</p>
 	</div>
 <div class="col-lg-12">
 <table border="1">
