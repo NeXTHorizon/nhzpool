@@ -1,18 +1,9 @@
-% include('header.tpl')
-        <li class="active"><a href="/">Home</a></li>
-        <li><a href="/accounts">Accounts</a></li>
-        <li><a href="/blocks">Blocks</a></li>
-        <li><a href="/payouts">Payouts</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
-    </div>
-  </div>
-  
-  <!-- Begin page content -->
+<div id="footer">
   <div class="container">
-    <div class="page-header">
-      <h1>Testing Page</h1>
-    </div>
+    <p class="text-muted credit">NHZ Forging Pool GUI by <a href="http://www.shellshockcomputer.com.au">Shellshock</a>. Donate to NHZ-QUA4-XF7V-HUSN-AVN33</p>
+  </div>
 </div>
-</div>
-% include('footer.tpl')
+<script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+</html>
