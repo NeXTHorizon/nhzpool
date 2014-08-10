@@ -26,7 +26,7 @@ def static(path):
 @route('/accounts')
 def accounts():
     poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    clean = json.dumps(poolAccount, indent=2)
+    clean = poolAccount["lessors"] 
     output = template('accounts', leased=clean)
     return output
 
@@ -44,8 +44,8 @@ def blocks():
     opener = urllib2.build_opener(urllib2.HTTPHandler())
     data = urllib.urlencode(payload)
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-    clean = json.dumps(forging, indent=2)   
-    output = template('blocks', rows=result, fg=clean)
+    deadline = forging["deadline"]   
+    output = template('blocks', rows=result, fg=deadline)
     return output
 
 @route('/payouts')

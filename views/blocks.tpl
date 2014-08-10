@@ -37,7 +37,8 @@
   <div class="text-center">
 <h1>Block List:</h1>
 <div class="col-lg-12">    
-    <li>{{fg}}</li>
+    <p>Time Till Block</p>
+    <p>{{fg}}</p>
 </div>
 <div class="col-lg-12">
 <table border="1">

@@ -36,11 +36,11 @@
   
   <div class="text-center">
 <h1>Accounts List:</h1>
-</div>
 <div class="col-lg-12">
 <p>{{leased}}</p>
 </div>
 </div>  
+</div>
 </div>
 </div>
 <div id="footer">
