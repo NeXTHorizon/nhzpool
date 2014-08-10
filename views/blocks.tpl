@@ -15,7 +15,7 @@
 	<h1>Block List:</h1>
   	</div>
 	<div class="col-lg-12">
-	<h4><strong>Estimated Time</strong></h4>    
+	<h3>Estimated Time</h3>    
     <p><strong>Until Next Block:</strong> {{fg}}</p>
 	</div>
 <div class="col-lg-12">
