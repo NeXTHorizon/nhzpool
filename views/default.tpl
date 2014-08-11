@@ -14,6 +14,10 @@
     <div class="page-header">
       <h1>Testing Page</h1>
     </div>
+    <div class="col-lg-12">
+	<h3>Estimated Time</h3>    
+    <p></p>
+	</div>
 </div>
 </div>
 </div>

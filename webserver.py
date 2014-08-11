@@ -24,6 +24,10 @@ def default():
 def static(path):
     return static_file(path, root='static')
 
+@route('/favicon.ico')
+def get_favicon():
+    return static('favicon.ico')
+
 @route('/accounts')
 def accounts():
     poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
