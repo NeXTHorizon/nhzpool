@@ -9,6 +9,7 @@ import sqlite3
 import sys
 import math
 import ConfigParser
+import time
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -18,10 +19,11 @@ c = conn.cursor()
 
 
 def main():
-    startForging()
-    getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
-    payout()
-    return True
+    while True:
+        startForging()
+        getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        payout()
+        time.sleep(10)
 
 
 def startForging():
@@ -144,4 +146,3 @@ def getLimit():
 
 if __name__ == "__main__":
     main()
-    sys.exit()
