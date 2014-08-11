@@ -9,8 +9,8 @@
   </div>
   
   <!-- Begin page content -->
-  <div class="text-center">
   <div class="container">
+  <div class="text-center">
     <div class="page-header">
       <h1>Testing Page</h1>
     </div>
