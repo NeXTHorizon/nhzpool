@@ -33,7 +33,7 @@ def accounts():
 
 @route('/blocks')
 def blocks(db):
-    c = db.execute("SELECT timestamp, block, totalfee FROM blocks")
+    c = db.execute("SELECT timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
     result = c.fetchall()
     c.close()
     payload = {
