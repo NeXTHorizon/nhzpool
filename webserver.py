@@ -15,6 +15,18 @@ config.read('config.ini')
 
 install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
 
+def blocktime():
+    payload = {
+        'requestType': 'getForging',
+        'secretPhrase': config.get("pool", "poolphrase")
+    }
+    opener = urllib2.build_opener(urllib2.HTTPHandler())
+    data = urllib.urlencode(payload)
+    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+    getdl = forging["deadline"]
+    deadline = str(datetime.timedelta(seconds=getdl))
+    return deadline
+    
 @route('/')
 def default():
     output = template('default')
@@ -37,19 +49,11 @@ def accounts():
 
 @route('/blocks')
 def blocks(db):
+    dl = blocktime()
     c = db.execute("SELECT timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
     result = c.fetchall()
-    c.close()
-    payload = {
-        'requestType': 'getForging',
-        'secretPhrase': config.get("pool", "poolphrase")
-    }
-    opener = urllib2.build_opener(urllib2.HTTPHandler())
-    data = urllib.urlencode(payload)
-    forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-    getdl = forging["deadline"]
-    deadline = str(datetime.timedelta(seconds=getdl))   
-    output = template('blocks', rows=result, fg=deadline)
+    c.close()   
+    output = template('blocks', rows=result, fg=dl)
     return output
 
 @route('/payouts')
