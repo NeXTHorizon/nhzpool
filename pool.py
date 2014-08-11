@@ -23,7 +23,7 @@ def main():
         startForging()
         getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
         payout()
-        time.sleep(10)
+        time.sleep(100)
 
 
 def startForging():
