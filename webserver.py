@@ -24,8 +24,7 @@ def blocktime():
     data = urllib.urlencode(payload)
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
     getdl = forging["deadline"]
-    deadline = str(datetime.timedelta(seconds=getdl))
-    return deadline
+    return getdl
     
 @route('/')
 def default():
@@ -53,8 +52,9 @@ def accounts():
 
 @route('/blocks')
 def blocks(db):
-    response.headers['Cache-Control'] = 'public, max-age=1200'
-    dl = blocktime()
+    deadline = blocktime()
+    response.headers['Cache-Control'] = "public, max-age=%d" % deadline
+    dl = str(datetime.timedelta(seconds=deadline))
     c = db.execute("SELECT timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
     result = c.fetchall()
     c.close()   

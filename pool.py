@@ -21,10 +21,11 @@ c = conn.cursor()
 def main():
     while True:
         startForging()
+        getleased()
         getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
         payout()
         time.sleep(100)
-
+        
 
 def startForging():
     payload = {
@@ -43,7 +44,20 @@ def startForging():
 
     return True
 
-
+def getleased():
+    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    for lessor in leasedaccounts['lessors']:
+        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
+        balance = lessorAccount['guaranteedBalanceNQT']
+        accountadd = lessorAccount['account']
+        heightfrom = lessorAccount['currentLeasingHeightFrom']
+        heightto = lessorAccount['currentLeasingHeightTo']
+        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
+    
+    conn.commit()
+    return True                    
+    
+        
 def getNew(newBlocks):
     shares = getShares()
     if 'blockIds' in newBlocks:
@@ -54,14 +68,19 @@ def getNew(newBlocks):
                 "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
                 (blockData['timestamp'],block,blockData['totalFeeNQT'])
             )
-
+            
             blockFee = float(blockData['totalFeeNQT'])
+            blockheight = float(blockData['height'])
             if blockFee > 0:
                 for (account, amount) in shares.items():
                     if account is not config.get("pool", "poolaccount"):
-                        payout = math.floor(blockFee * (amount['percentage']/100))
-                        c.execute(
-                            "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
+                        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
+                        heightfrom = lessorAccount['currentLeasingHeightFrom']
+                        if heightfrom < blockheight:                                           
+                            payout = math.floor(blockFee * (amount['percentage']/100))                     
+                            
+                            c.execute(
+                                    "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
                             (blockData['timestamp'],account,amount['percentage'],payout,False)
                         )
 
@@ -100,6 +119,7 @@ def getShares():
             leasedAmount[account]['percentage'] = amount['amount'] / (totalAmount/100)
 
     return leasedAmount
+    
 
 
 def payout():
