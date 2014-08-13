@@ -43,11 +43,11 @@ def get_favicon():
     return static('favicon.ico')
 
 @route('/accounts')
-def accounts():
+def accounts(db):
     response.headers['Cache-Control'] = 'public, max-age=86400'
-    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    clean = poolAccount["lessors"] 
-    output = template('accounts', leased=clean)
+    c = db.execute("SELECT account, heightfrom, heightto, amount FROM accounts")
+    result = c.fetchall()   
+    output = template('accounts', rows=result)
     return output
 
 @route('/blocks')
