@@ -161,8 +161,7 @@ def payout():
 
 
 def getLimit():
-    return config.get("pool", "payoutlimit")*100000000;
-
+    return float(config.get("pool", "payoutlimit"))*100000000;
 
 if __name__ == "__main__":
     main()
