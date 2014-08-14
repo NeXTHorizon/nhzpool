@@ -29,11 +29,8 @@ def payout():
             pending[share[0]] = share[1]
 
     for (account, amount) in pending.items():
-        print amount
         if amount > getLimit():
-            print account
             fee     = ((amount*1)/100)
-            print fee
             payment = str((amount-fee)-100000000)
             account = str(account)
             fee     = str(fee)
@@ -46,12 +43,11 @@ def payout():
                 'feeNQT': 100000000,
                 'deadline': 60
             }
-            print payload
-  #          opener = urllib2.build_opener(urllib2.HTTPHandler())
- #           data = urllib.urlencode(payload)
-#            content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-   #         if 'transaction' in content.keys():
-    #            c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
+            opener = urllib2.build_opener(urllib2.HTTPHandler())
+            data = urllib.urlencode(payload)
+            content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+            if 'transaction' in content.keys():
+                c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
 
     conn.commit()
     return True
