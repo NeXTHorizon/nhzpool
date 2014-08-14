@@ -18,3 +18,9 @@ heightfrom NUMERIC,
 heightto NUMERIC,
 amount NUMERIC,
 UNIQUE (account));
+
+CREATE TABLE payouts (
+account TEXT,
+fee NUMERIC,
+payment NUMERIC,
+UNIQUE (account, payment))

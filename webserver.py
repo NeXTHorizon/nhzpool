@@ -63,8 +63,8 @@ def blocks(db):
 
 @route('/payouts')
 def payouts(db):
-    response.headers['Cache-Control'] = 'public, max-age=7200'
-    c = db.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
+    response.headers['Cache-Control'] = 'public, max-age=86400'
+    c = db.execute("SELECT account, fee, payment FROM payouts")
     result = c.fetchall()   
     output = template('payouts', rows=result)
     return output

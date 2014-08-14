@@ -35,6 +35,7 @@ def payout():
             account = str(account)
             fee     = str(fee)
             print "Pay out "+payment+" to "+account+" (keep fee: "+fee+")"
+            c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))
             payload = {
                 'requestType': 'sendMoney',
                 'secretPhrase': config.get("pool", "poolphrase"),
