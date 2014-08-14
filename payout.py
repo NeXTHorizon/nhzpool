@@ -30,7 +30,7 @@ def payout():
 
     for (account, amount) in pending.items():
         if amount > getLimit():
-            fee     = ((amount*1)/100)
+            fee     = ((amount*float(config.get("pool", "feePercent")))/100)
             payment = str((amount-fee)-100000000)
             account = str(account)
             fee     = str(fee)
