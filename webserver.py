@@ -44,7 +44,7 @@ def get_favicon():
 
 @route('/accounts')
 def accounts(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'
+    response.headers['Cache-Control'] = 'public, max-age=3600'
     c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased")
     result = c.fetchall()   
     output = template('accounts', rows=result)
