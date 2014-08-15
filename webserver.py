@@ -69,8 +69,8 @@ def payouts(db):
     output = template('payouts', rows=result)
     return output
 
-@route('/transactions')
-def transactions(db):
+@route('/unpaid')
+def unpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=1200'
     c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0")
     result = c.fetchall()   
