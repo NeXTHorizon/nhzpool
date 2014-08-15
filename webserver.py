@@ -68,4 +68,12 @@ def payouts(db):
     output = template('payouts', rows=result)
     return output
 
+@route('/transactions')
+def transactions(db):
+    response.headers['Cache-Control'] = 'public, max-age=1200'
+    c = db.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
+    result = c.fetchall()   
+    output = template('transactions', rows=result)
+    return output
+	
 run(server=PasteServer, port=8888, host='0.0.0.0')
