@@ -20,12 +20,13 @@ c = conn.cursor()
 
 def main():
     while True:
-        startForging()
-        getleased()
+        #startForging()
+        #getleased()
         getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
-        time.sleep(100)
+        #time.sleep(100)
+        print "done"
+        sys.exit()
         
-
 def startForging():
     payload = {
         'requestType': 'getForging',
@@ -64,8 +65,8 @@ def getNew(newBlocks):
             blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block="+block).read())
 
             c.execute(
-                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
-                (blockData['timestamp'],block,blockData['totalFeeNQT'])
+                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);",
+                (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height'])
             )
             
             blockFee = float(blockData['totalFeeNQT'])
