@@ -9,6 +9,7 @@ import sqlite3
 import sys
 import math
 import ConfigParser
+import time
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -18,11 +19,12 @@ c = conn.cursor()
 
 
 def main():
-    startForging()
-    getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
-    payout()
-    return True
-
+    while True:
+        startForging()
+        getleased()
+        getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        time.sleep(100)
+        
 
 def startForging():
     payload = {
@@ -41,7 +43,20 @@ def startForging():
 
     return True
 
-
+def getleased():
+    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    for lessor in leasedaccounts['lessors']:
+        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
+        balance = lessorAccount['guaranteedBalanceNQT']
+        accountadd = lessorAccount['account']
+        heightfrom = lessorAccount['currentLeasingHeightFrom']
+        heightto = lessorAccount['currentLeasingHeightTo']
+        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
+    
+    conn.commit()
+    return True                    
+    
+        
 def getNew(newBlocks):
     shares = getShares()
     if 'blockIds' in newBlocks:
@@ -52,14 +67,19 @@ def getNew(newBlocks):
                 "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
                 (blockData['timestamp'],block,blockData['totalFeeNQT'])
             )
-
+            
             blockFee = float(blockData['totalFeeNQT'])
+            blockheight = float(blockData['height'])
             if blockFee > 0:
                 for (account, amount) in shares.items():
                     if account is not config.get("pool", "poolaccount"):
-                        payout = math.floor(blockFee * (amount['percentage']/100))
-                        c.execute(
-                            "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
+                        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
+                        heightfrom = lessorAccount['currentLeasingHeightFrom']
+                        if heightfrom < blockheight:                                           
+                            payout = math.floor(blockFee * (amount['percentage']/100))                     
+                            
+                            c.execute(
+                                    "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
                             (blockData['timestamp'],account,amount['percentage'],payout,False)
                         )
 
@@ -99,49 +119,5 @@ def getShares():
 
     return leasedAmount
 
-
-def payout():
-    c.execute("SELECT account, amount FROM accounts WHERE paid=0 AND amount>0;")
-    unpaid = c.fetchall()
-    c.execute("SELECT * FROM blocks WHERE totalfee>0;")
-    blocks = c.fetchall()
-
-    pending = {}
-    for share in unpaid:
-        if share[0] in pending:
-            pending[share[0]] += share[1]
-        else:
-            pending[share[0]] = share[1]
-
-    for (account, amount) in pending.items():
-        if amount > getLimit():
-            fee     = ((amount*config.get("pool", "feePercent"))/100)
-            payment = str((amount-fee)-100000000)
-            account = str(account)
-            fee     = str(fee)
-            print "Pay out "+payment+" to "+account+" (keep fee: "+fee+")"
-            payload = {
-                'requestType': 'sendMoney',
-                'secretPhrase': config.get("pool", "poolphrase"),
-                'recipient': account,
-                'amountNQT': payment,
-                'feeNQT': 100000000,
-                'deadline': 60
-            }
-            opener = urllib2.build_opener(urllib2.HTTPHandler())
-            data = urllib.urlencode(payload)
-            content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-            if 'transaction' in content.keys():
-                c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
-
-    conn.commit()
-    return True
-
-
-def getLimit():
-    return config.get("pool", "payoutlimit")*100000000;
-
-
 if __name__ == "__main__":
     main()
-    sys.exit()

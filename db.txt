@@ -11,3 +11,16 @@ percentage NUMERIC,
 amount NUMERIC,
 paid NUMERIC,
 UNIQUE (blocktime, account));
+
+CREATE TABLE leased (
+account TEXT,
+heightfrom NUMERIC,
+heightto NUMERIC,
+amount NUMERIC,
+UNIQUE (account));
+
+CREATE TABLE payouts (
+account TEXT,
+fee NUMERIC,
+payment NUMERIC,
+UNIQUE (account, payment))
