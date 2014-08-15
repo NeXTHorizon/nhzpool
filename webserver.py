@@ -52,8 +52,7 @@ def accounts(db):
 
 @route('/blocks')
 def blocks(db):
-    deadline = blocktime()
-    response.headers['Cache-Control'] = "public, max-age=%d" % deadline
+    response.headers['Cache-Control'] = 'public, max-age=120'
     dl = str(datetime.timedelta(seconds=deadline))
     c = db.execute("SELECT timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
     result = c.fetchall()
