@@ -72,7 +72,7 @@ def payouts(db):
 @route('/transactions')
 def transactions(db):
     response.headers['Cache-Control'] = 'public, max-age=1200'
-    c = db.execute("SELECT account, percentage, amount, paid, blocktime FROM accounts")
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0")
     result = c.fetchall()   
     output = template('transactions', rows=result)
     return output

@@ -3,7 +3,7 @@
         <li><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
         <li><a href="/payouts">Payouts</a></li>
-		<li class="active"><a href="/transactions">Transactions</a></li>
+		<li class="active"><a href="/unpaid">Unpaid</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>
@@ -13,7 +13,7 @@
   
   <div class="text-center">
 	<div class="page-header">
-		<h1>Payouts List:</h1>
+		<h1>Unpaid Transactions:</h1>
 	</div>
 </div>
 <div class="col-lg-12">
