@@ -6,10 +6,15 @@ Forging pool for NHZ
 Set up database:
 cat db.txt | sqlite3 pool.db
 
-Edit variables in pool.py
+Edit variables in config.ini
+
+Pool backend:
+
+screen -d -m -S nhzpool ./pool.py
 
 Cron:
-\* * * * * /path/to/pool.py >> /path/to/log
+\* * * * * /path/to/payout.py >> /path/to/log
+( Set time you want payouts to run at )
 
 Webserver:
 
