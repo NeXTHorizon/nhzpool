@@ -35,7 +35,6 @@ def payout():
             account = str(account)
             fee     = str(fee)
             print "Pay out "+payment+" to "+account+" (keep fee: "+fee+")"
-            c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))
             payload = {
                 'requestType': 'sendMoney',
                 'secretPhrase': config.get("pool", "poolphrase"),
@@ -49,6 +48,7 @@ def payout():
             content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
             if 'transaction' in content.keys():
                 c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
+                c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))
 
     conn.commit()
     return True
