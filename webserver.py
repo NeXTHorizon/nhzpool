@@ -25,21 +25,6 @@ def blocktime():
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
     getdl = forging["deadline"]
     return getdl
-
-def lastblock(db):
-    
-    lastblock = d.fetchone()
-    print lastblock
-    blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block=", data=lastblock).read())
-    payload = {
-        'requestType': 'getBlock',
-        'block': lastblock
-    }
-    opener = urllib2.build_opener(urllib2.HTTPHandler())
-    data = urllib.urlencode(payload)
-    api = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
-    getheight = api["height"]
-    return getheight
     
 @route('/')
 def default():
@@ -77,7 +62,7 @@ def blocks(db):
     response.headers['Cache-Control'] = 'public, max-age=120'
     deadline = blocktime()
     dl = str(datetime.timedelta(seconds=deadline))
-    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
+    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC")
     result = c.fetchall()
     c.close()   
     output = template('blocks', rows=result, fg=dl)
@@ -94,7 +79,7 @@ def payouts(db):
 @route('/unpaid')
 def unpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=1200'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0")
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC")
     result = c.fetchall()   
     output = template('unpaid', rows=result)
     return output
@@ -102,7 +87,7 @@ def unpaid(db):
 @route('/paid')
 def paid(db):
     response.headers['Cache-Control'] = 'public, max-age=1200'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0")
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC")
     result = c.fetchall()   
     output = template('paid', rows=result)
     return output
