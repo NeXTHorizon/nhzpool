@@ -75,7 +75,7 @@ def blocks(db):
     response.headers['Cache-Control'] = 'public, max-age=120'
     deadline = blocktime()
     dl = str(datetime.timedelta(seconds=deadline))
-    c = db.execute("SELECT timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
+    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0")
     result = c.fetchall()
     c.close()   
     output = template('blocks', rows=result, fg=dl)

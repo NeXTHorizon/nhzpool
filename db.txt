@@ -2,6 +2,7 @@ CREATE TABLE blocks (
 timestamp NUMERIC,
 block TEXT,
 totalfee NUMERIC,
+height NUMERIC,
 UNIQUE (timestamp));
 
 CREATE TABLE accounts (
