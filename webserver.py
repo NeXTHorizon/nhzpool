@@ -27,11 +27,18 @@ def blocktime():
     return getdl
     
 @route('/')
-def default():
-    response.headers['Cache-Control'] = 'public, max-age=172800'
+def default(db):
+    response.headers['Cache-Control'] = 'public, max-age=3600'
     poolaccount = config.get("pool", "poolaccount")
     poolfee = config.get("pool", "feePercent")
-    output = template('default', pa=poolaccount, fee=poolfee)
+    db.text_factory = str
+    d = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC")
+    getlastheight = d.fetchone()
+    lastheight = getlastheight[0]
+    print lastheight
+    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
+    result = c.fetchall()   
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -52,7 +59,7 @@ def accounts(db):
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
     print lastheight
-    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
+    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased")
     result = c.fetchall()   
     output = template('accounts', rows=result)
     return output
