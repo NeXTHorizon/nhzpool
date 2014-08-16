@@ -94,7 +94,15 @@ def unpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=1200'
     c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0")
     result = c.fetchall()   
-    output = template('transactions', rows=result)
+    output = template('unpaid', rows=result)
+    return output
+
+@route('/paid')
+def paid(db):
+    response.headers['Cache-Control'] = 'public, max-age=1200'
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0")
+    result = c.fetchall()   
+    output = template('paid', rows=result)
     return output
 	
 run(server=PasteServer, port=8888, host='0.0.0.0')

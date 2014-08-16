@@ -4,6 +4,7 @@
         <li><a href="/blocks">Blocks</a></li>
         <li><a href="/payouts">Payouts</a></li>
 		<li><a href="/unpaid">Unpaid</a></li>
+		<li><a href="/paid">Paid</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

@@ -2,9 +2,9 @@
         <li><a href="/">Home</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
-        <li class="active"><a href="/payouts">Payouts</a></li>
+        <li><a href="/payouts">Payouts</a></li>
 		<li><a href="/unpaid">Unpaid</a></li>
-		<li><a href="/paid">Paid</a></li>
+		<li class="active"><a href="/paid">Paid</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>
@@ -14,7 +14,7 @@
   
   <div class="text-center">
 	<div class="page-header">
-		<h1>Payouts List:</h1>
+		<h1>Paid Transactions:</h1>
 	</div>
 </div>
 <div class="col-lg-12">
