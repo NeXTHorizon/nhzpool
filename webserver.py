@@ -25,10 +25,25 @@ def blocktime():
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
     getdl = forging["deadline"]
     return getdl
+
+def lastblock(db):
+    
+    lastblock = d.fetchone()
+    print lastblock
+    blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block=", data=lastblock).read())
+    payload = {
+        'requestType': 'getBlock',
+        'block': lastblock
+    }
+    opener = urllib2.build_opener(urllib2.HTTPHandler())
+    data = urllib.urlencode(payload)
+    api = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
+    getheight = api["height"]
+    return getheight
     
 @route('/')
 def default():
-    response.headers['Cache-Control'] = 'public, max-age=600'
+    response.headers['Cache-Control'] = 'public, max-age=172800'
     output = template('default')
     return output
 
@@ -45,7 +60,12 @@ def get_favicon():
 @route('/accounts')
 def accounts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased")
+    db.text_factory = str
+    d = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC")
+    getlastheight = d.fetchone()
+    lastheight = getlastheight[0]
+    print lastheight
+    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall()   
     output = template('accounts', rows=result)
     return output

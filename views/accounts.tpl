@@ -13,7 +13,7 @@
   
   <div class="text-center">
   <div class="page-header">
-<h1>Accounts List:</h1>
+<h1>Active Accounts List:</h1>
 </div>
 <div class="col-lg-12">
 <table border="1">
