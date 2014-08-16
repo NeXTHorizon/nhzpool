@@ -14,11 +14,13 @@
   <div class="container">
   <div class="text-center">
     <div class="page-header">
-      <h1>Testing Page</h1>
+      <h1>NHZ Forging Pool</h1>
     </div>
     <div class="col-lg-12">
-	<h3>Estimated Time</h3>    
-    <p></p>
+	<h3>Pool Account</h3>    
+    <p><strong>{{pa}}</strong></p>
+    <p>Pool Fee is {{fee}}%</p>
+    <p>Pool Interface is still in testing only raw data is displayed</p>
 	</div>
 </div>
 </div>

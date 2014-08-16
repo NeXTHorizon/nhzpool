@@ -44,7 +44,9 @@ def lastblock(db):
 @route('/')
 def default():
     response.headers['Cache-Control'] = 'public, max-age=172800'
-    output = template('default')
+    poolaccount = config.get("pool", "poolaccount")
+    poolfee = config.get("pool", "feePercent")
+    output = template('default', pa=poolaccount, fee=poolfee)
     return output
 
 @route('/static/:path#.+#', name='static')
