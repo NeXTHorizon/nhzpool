@@ -24,4 +24,4 @@ CREATE TABLE payouts (
 account TEXT,
 fee NUMERIC,
 payment NUMERIC,
-UNIQUE (account, payment))
+UNIQUE (account, payment));
