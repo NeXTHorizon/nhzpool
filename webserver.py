@@ -3,7 +3,7 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer, debug
+from bottle import route, install, run, template, static_file, response, PasteServer#, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
@@ -100,5 +100,5 @@ def paid(db):
     output = template('paid', rows=result)
     return output
 	
-debug(True)    
+#debug(True)    
 run(server=PasteServer, port=8888, host='0.0.0.0')

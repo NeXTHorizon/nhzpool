@@ -18,6 +18,7 @@
 </div>
 <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
+<tr><td><strong>Account</strong></td><td><strong>First Block</strong></td><td><strong>Last Block</strong></td><td><strong>Amount</strong></td></tr>
 %for row in rows:
   <tr>
   %for col in row:

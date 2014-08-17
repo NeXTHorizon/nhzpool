@@ -20,9 +20,9 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <h3>Pool Account: <small>{{pa}}</small></h3>
    	<h4>Leased Amount: <small>{{nhzb}} NHZ</small></h4>
-    <h5>Pool Fee is <small>{{fee}}%</small></h5>
+    <h4>Pool Fee is: <small>{{fee}}%</small></h4>
     <br>
-    <p>Pool Interface is still in testing only raw data is displayed</p>
+    <em>Pool Interface is still in testing only raw data is displayed</em>
   </div> 
 </div>
 <div class="row">

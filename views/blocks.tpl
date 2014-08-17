@@ -22,6 +22,7 @@
 	</div>
 <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
+<tr><td><strong>Height</strong></td><td><strong>Timestamp</strong></td><td><strong>Block</strong></td><td><strong>Total Fee</strong></td></tr>
 %for row in rows:
   <tr>
   %for col in row:
