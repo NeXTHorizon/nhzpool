@@ -60,7 +60,6 @@ def accounts(db):
     d = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
-    print lastheight
     c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased")
     result = c.fetchall()   
     output = template('accounts', rows=result)
