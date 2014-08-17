@@ -3,7 +3,7 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer
+from bottle import route, install, run, template, static_file, response, PasteServer, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
@@ -35,10 +35,11 @@ def default(db):
     d = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
-    print lastheight
     c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
-    result = c.fetchall()   
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result)
+    result = c.fetchall()
+    e = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC limit 5")
+    block = e.fetchall()   
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -99,4 +100,5 @@ def paid(db):
     output = template('paid', rows=result)
     return output
 	
+debug(True)    
 run(server=PasteServer, port=8888, host='0.0.0.0')

@@ -40,6 +40,19 @@
 </div>
   </div>
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+  <h3>Last Blocks Found</h3>
+    <div class="table-responsive">
+<table class="table table-striped table-bordered table-condensed table-hover">
+%for row in blocks:
+  <tr>
+  %for col in row:
+    <td>{{col}}</td>
+  %end
+  </tr>
+%end
+</table>
+</div>
+  </div>
   </div>
 </div>
 </div>
