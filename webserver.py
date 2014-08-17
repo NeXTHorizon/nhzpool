@@ -3,7 +3,7 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer
+from bottle import route, install, run, template, static_file, response, PasteServer, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
@@ -32,13 +32,15 @@ def default(db):
     poolaccount = config.get("pool", "poolaccount")
     poolfee = config.get("pool", "feePercent")
     db.text_factory = str
-    d = db.execute("SELECT height, timestamp, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC limit 6")
+    d = db.execute("SELECT height, timestamp, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC limit 5")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
     c = db.execute("SELECT account, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall() 
-    block = d.fetchall()   
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block)
+    block = d.fetchall()
+    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    leasebal = leasedaccounts['effectiveBalanceNHZ']   
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -98,5 +100,6 @@ def paid(db):
     result = c.fetchall()   
     output = template('paid', rows=result)
     return output
-	    
+	
+debug(True)    
 run(server=PasteServer, port=8888, host='0.0.0.0')
