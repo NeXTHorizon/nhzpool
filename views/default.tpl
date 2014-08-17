@@ -26,9 +26,10 @@
 </div>
 <div class="row">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Active Leased Accounts</h3>
+  <h3>Active Accounts<p><small>at Last Block Found</p></small></h3>
   <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
+<tr><td><strong>Account</strong></td><td><strong>Last Block</strong></td><td><strong>Amount</strong></td></tr>
 %for row in rows:
   <tr>
   %for col in row:
@@ -40,9 +41,10 @@
 </div>
   </div>
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Last Blocks Found</h3>
+  <h3>Last Blocks<p><small>Found</p></small></h3>
     <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
+<tr><td><strong>Height</strong></td><td><strong>Timestamp</strong></td><td><strong>Amount</strong></td></tr>
 %for row in blocks:
   <tr>
   %for col in row:
