@@ -32,14 +32,15 @@ def default(db):
     poolaccount = config.get("pool", "poolaccount")
     poolfee = config.get("pool", "feePercent")
     db.text_factory = str
-    d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
+    d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 1")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
     c = db.execute("SELECT account, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
-    result = c.fetchall() 
-    block = d.fetchall()
-    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    leasebal = leasedaccounts['effectiveBalanceNHZ']   
+    result = c.fetchall()
+    e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
+    block = e.fetchall() 
+    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    leasebal = getaccounts['effectiveBalanceNHZ']   
     output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
     return output
 
@@ -70,7 +71,7 @@ def blocks(db):
     response.headers['Cache-Control'] = 'public, max-age=120'
     deadline = blocktime()
     dl = str(datetime.timedelta(seconds=deadline))
-    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks ORDER BY timestamp DESC")
+    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC")
     result = c.fetchall()
     c.close()   
     output = template('blocks', rows=result, fg=dl)
