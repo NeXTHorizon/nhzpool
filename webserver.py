@@ -32,7 +32,7 @@ def default(db):
     poolaccount = config.get("pool", "poolaccount")
     poolfee = config.get("pool", "feePercent")
     db.text_factory = str
-    d = db.execute("SELECT height, timestamp, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC limit 5")
+    d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
     c = db.execute("SELECT account, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
@@ -70,7 +70,7 @@ def blocks(db):
     response.headers['Cache-Control'] = 'public, max-age=120'
     deadline = blocktime()
     dl = str(datetime.timedelta(seconds=deadline))
-    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC")
+    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks ORDER BY timestamp DESC")
     result = c.fetchall()
     c.close()   
     output = template('blocks', rows=result, fg=dl)
@@ -101,4 +101,4 @@ def paid(db):
     return output
 	
 #debug(True)    
-run(server=PasteServer, port=8888, host='0.0.0.0')
+run(server=PasteServer, port=8810, host='0.0.0.0')
