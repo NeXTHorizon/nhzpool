@@ -50,7 +50,7 @@ def getleased():
         accountadd = lessorAccount['account']
         heightfrom = lessorAccount['currentLeasingHeightFrom']
         heightto = lessorAccount['currentLeasingHeightTo']
-        c.execute("INSERT OR IGNORE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
+        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
     
     conn.commit()
     return True                    
