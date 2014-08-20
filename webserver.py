@@ -15,7 +15,7 @@ config.read('config.ini')
 
 install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
 
-@route('/api')
+@route('/api/btime')
 def blocktime():
     response.headers['Cache-Control'] = 'public, max-age=100'
     payload = {
