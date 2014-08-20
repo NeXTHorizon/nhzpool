@@ -21,7 +21,7 @@
     <p><div id="btime"></div></p>
 	</div>
 	<script>
-  $.getJSON('/api', function(data) {
+  $.getJSON('/api/btime', function(data) {
         var output="<p><strong>Until Next Block: </strong>" + data.blocktime + "</p>";
         document.getElementById("btime").innerHTML=output;
   });
