@@ -18,8 +18,14 @@
   	</div>
 	<div class="col-lg-12">
 	<h3>Estimated Time</h3>    
-    <p><strong>Until Next Block:</strong> {{fg}}</p>
+    <p><div id="btime"></div></p>
 	</div>
+	<script>
+  $.getJSON('/api', function(data) {
+        var output="<p><strong>Until Next Block: </strong>" + data.blocktime + "</p>";
+        document.getElementById("btime").innerHTML=output;
+  });
+    </script>
 <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
 <tr><td><strong>Height</strong></td><td><strong>Timestamp</strong></td><td><strong>Block</strong></td><td><strong>Total Fee</strong></td></tr>

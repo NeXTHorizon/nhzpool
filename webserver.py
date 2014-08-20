@@ -15,7 +15,9 @@ config.read('config.ini')
 
 install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
 
+@route('/api')
 def blocktime():
+    response.headers['Cache-Control'] = 'public, max-age=100'
     payload = {
         'requestType': 'getForging',
         'secretPhrase': config.get("pool", "poolphrase")
@@ -24,7 +26,8 @@ def blocktime():
     data = urllib.urlencode(payload)
     forging = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
     getdl = forging["deadline"]
-    return getdl
+    dl = str(datetime.timedelta(seconds=getdl))
+    return {'blocktime': dl}
     
 @route('/')
 def default(db):
@@ -68,13 +71,11 @@ def accounts(db):
 
 @route('/blocks')
 def blocks(db):
-    response.headers['Cache-Control'] = 'public, max-age=120'
-    deadline = blocktime()
-    dl = str(datetime.timedelta(seconds=deadline))
+    response.headers['Cache-Control'] = 'public, max-age=3600'
     c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC")
     result = c.fetchall()
     c.close()   
-    output = template('blocks', rows=result, fg=dl)
+    output = template('blocks', rows=result)
     return output
 
 @route('/payouts')
@@ -87,7 +88,7 @@ def payouts(db):
 
 @route('/unpaid')
 def unpaid(db):
-    response.headers['Cache-Control'] = 'public, max-age=1200'
+    response.headers['Cache-Control'] = 'public, max-age=3600'
     c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC")
     result = c.fetchall()   
     output = template('unpaid', rows=result)
@@ -95,7 +96,7 @@ def unpaid(db):
 
 @route('/paid')
 def paid(db):
-    response.headers['Cache-Control'] = 'public, max-age=1200'
+    response.headers['Cache-Control'] = 'public, max-age=3600'
     c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC")
     result = c.fetchall()   
     output = template('paid', rows=result)
