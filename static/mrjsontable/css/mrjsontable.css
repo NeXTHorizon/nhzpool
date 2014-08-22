@@ -1,5 +1,5 @@
 ﻿
-.mrjt .legend { border: 1px solid #DCDCDC; text-align: right; float: right; padding: 3px; border-radius: 5px; margin: 10px 0px; }
+.mrjt .legend { text-align: right; float: right; padding: 1px; margin: 1px 0px; }
     .mrjt .legend label { margin-right: 10px; }
 
 .mrjt table { width: 100%; clear: both; margin: 10px 0px; }
