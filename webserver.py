@@ -49,7 +49,28 @@ def apiblocks(db):
 def apileased():
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     leasebal = getaccounts['effectiveBalanceNHZ']
-    return {'blocktime': leasebal}   
+    return {'blocktime': leasebal}
+
+@route('/api/payouts')
+def apipayouts(db):
+    response.headers['Cache-Control'] = 'public, max-age=3600'
+    c = db.execute("SELECT account, fee, payment FROM payouts").fetchall()
+    pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
+    return pays
+
+@route('/api/paid')
+def apipaid(db):
+    response.headers['Cache-Control'] = 'public, max-age=3600'
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
+    pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
+    return pays
+
+@route('/api/unpaid')
+def apiunpaid(db):
+    response.headers['Cache-Control'] = 'public, max-age=3600'
+    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC").fetchall()   
+    pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
+    return pays
     
             
 @route('/')
@@ -88,35 +109,26 @@ def accounts(db):
 
 @route('/blocks')
 def blocks(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT height, timestamp, block, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC")
-    result = c.fetchall()
-    c.close()   
-    output = template('blocks', rows=result)
+    response.headers['Cache-Control'] = 'public, max-age=86400'
+    output = template('blocks')
     return output
 
 @route('/payouts')
 def payouts(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'
-    c = db.execute("SELECT account, fee, payment FROM payouts")
-    result = c.fetchall()   
-    output = template('payouts', rows=result)
+    response.headers['Cache-Control'] = 'public, max-age=86400'   
+    output = template('payouts')
     return output
 
 @route('/unpaid')
 def unpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC")
-    result = c.fetchall()   
-    output = template('unpaid', rows=result)
+    output = template('unpaid')
     return output
 
 @route('/paid')
 def paid(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC")
-    result = c.fetchall()   
-    output = template('paid', rows=result)
+    response.headers['Cache-Control'] = 'public, max-age=3600'   
+    output = template('paid')
     return output
 	
 debug(True)    
