@@ -27,16 +27,30 @@
   });
     </script>
 <div class="table-responsive">
-<table class="table table-striped table-bordered table-condensed table-hover">
-<tr><td><strong>Height</strong></td><td><strong>Timestamp</strong></td><td><strong>Block</strong></td><td><strong>Total Fee</strong></td></tr>
-%for row in rows:
-  <tr>
-  %for col in row:
-    <td>{{col}}</td>
-  %end
-  </tr>
-%end
-</table>
+<div id="loctable"></div>
+<script>
+$.getJSON("/api/blocks", function(data) {
+    $("#loctable").mrjsontable({
+        tableClass: "my-table table-striped table-bordered table-condensed table-hover",
+        pageSize: 10, //you can change the page size here
+        columns: [
+            new $.fn.mrjsontablecolumn({
+                heading: "Timestamp",
+                data: "timestamp"
+            }),
+            new $.fn.mrjsontablecolumn({
+                heading: "Height",
+                data: "height"
+            }),
+            new $.fn.mrjsontablecolumn({
+                heading: "Total Fee",
+                data: "totalfee"
+            })
+        ],
+        data: data
+    });
+});
+</script>
 </div>
 </div>  
 </div>
