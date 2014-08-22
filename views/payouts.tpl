@@ -18,16 +18,30 @@
 	</div>
 </div>
 <div class="table-responsive">
-<table class="table table-striped table-bordered table-condensed table-hover">
-<tr><td><strong>Account</strong></td><td><strong>Fee</strong></td><td><strong>Payment</strong></td></tr>
-%for row in rows:
-  <tr>
-  %for col in row:
-    <td>{{col}}</td>
-  %end
-  </tr>
-%end
-</table>
+<div id="loctable"></div>
+<script>
+$.getJSON("/api/payouts", function(data) {
+    $("#loctable").mrjsontable({
+        tableClass: "my-table table-striped table-bordered table-condensed table-hover",
+        pageSize: 10, //you can change the page size here
+        columns: [
+            new $.fn.mrjsontablecolumn({
+                heading: "Account",
+                data: "account"
+            }),
+            new $.fn.mrjsontablecolumn({
+                heading: "Paid",
+                data: "payment"
+            }),
+            new $.fn.mrjsontablecolumn({
+                heading: "Fee",
+                data: "fee"
+            })
+        ],
+        data: data
+    });
+});
+</script>
 </div>
 </div>  
 </div>
