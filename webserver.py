@@ -121,13 +121,13 @@ def payouts(db):
 
 @route('/unpaid')
 def unpaid(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=86400'
     output = template('unpaid')
     return output
 
 @route('/paid')
 def paid(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'   
+    response.headers['Cache-Control'] = 'public, max-age=86400'   
     output = template('paid')
     return output
 	
