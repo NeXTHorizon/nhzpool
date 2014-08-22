@@ -64,7 +64,9 @@ def default(db):
     c = db.execute("SELECT account, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall()
     e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
-    block = e.fetchall() 
+    block = e.fetchall()
+    getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    leasebal = getaccounts['effectiveBalanceNHZ'] 
     output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
     return output
 
