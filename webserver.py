@@ -40,7 +40,7 @@ def apiaccounts(db):
 
 @route('/api/blocks')
 def apiblocks(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=1800'
     c = db.execute("SELECT height, timestamp, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC").fetchall()
     blocks = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return blocks
@@ -53,14 +53,14 @@ def apileased():
 
 @route('/api/payouts')
 def apipayouts(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=86400'
     c = db.execute("SELECT account, fee, payment FROM payouts").fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/paid')
 def apipaid(db):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=86400'
     c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
@@ -103,31 +103,31 @@ def get_favicon():
 
 @route('/accounts')
 def accounts(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'   
+    response.headers['Cache-Control'] = 'public, max-age=43200'   
     output = template('accounts')
     return output
 
 @route('/blocks')
 def blocks(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'
+    response.headers['Cache-Control'] = 'public, max-age=43200'
     output = template('blocks')
     return output
 
 @route('/payouts')
 def payouts(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'   
+    response.headers['Cache-Control'] = 'public, max-age=43200'   
     output = template('payouts')
     return output
 
 @route('/unpaid')
 def unpaid(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'
+    response.headers['Cache-Control'] = 'public, max-age=43200'
     output = template('unpaid')
     return output
 
 @route('/paid')
 def paid(db):
-    response.headers['Cache-Control'] = 'public, max-age=86400'   
+    response.headers['Cache-Control'] = 'public, max-age=43200'   
     output = template('paid')
     return output
 	
