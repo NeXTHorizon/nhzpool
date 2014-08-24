@@ -76,7 +76,7 @@ def apiunpaid(db):
 @route('/')
 def default(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    poolaccount = config.get("pool", "poolaccount")
+    poolaccount = config.get("pool", "poolaccountrs")
     poolfee = config.get("pool", "feePercent")
     db.text_factory = str
     d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 1")
