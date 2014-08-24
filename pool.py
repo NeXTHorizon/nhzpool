@@ -20,11 +20,11 @@ c = conn.cursor()
 
 def main():
     while True:
-        #startForging()
+        startForging()
         getleased()
-        #getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
-        #time.sleep(100)
-        sys.exit()
+        getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        time.sleep(100)
+        
         
 def startForging():
     payload = {
