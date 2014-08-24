@@ -20,10 +20,11 @@ c = conn.cursor()
 
 def main():
     while True:
-        startForging()
+        #startForging()
         getleased()
-        getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
-        time.sleep(100)
+        #getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        #time.sleep(100)
+        sys.exit()
         
 def startForging():
     payload = {
@@ -50,7 +51,8 @@ def getleased():
         accountadd = lessorAccount['account']
         heightfrom = lessorAccount['currentLeasingHeightFrom']
         heightto = lessorAccount['currentLeasingHeightTo']
-        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
+        rs = lessorAccount['accountRS']
+        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount, ars) VALUES (?,?,?,?,?);",(accountadd, heightfrom, heightto, balance, rs))
     
     conn.commit()
     return True                    
