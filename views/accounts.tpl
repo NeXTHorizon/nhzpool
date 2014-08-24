@@ -25,7 +25,7 @@ $.getJSON("/api/accounts", function(data) {
         columns: [
             new $.fn.mrjsontablecolumn({
                 heading: "Account",
-                data: "account"
+                data: "ars"
             }),
             new $.fn.mrjsontablecolumn({
                 heading: "Height From",

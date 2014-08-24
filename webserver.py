@@ -34,7 +34,7 @@ def apiaccounts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
     getlastheight = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC").fetchone()
     lastheight = getlastheight[0]
-    c = db.execute("SELECT account, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight)).fetchall()
+    c = db.execute("SELECT ars, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight)).fetchall()
     accounts = json.dumps( [dict(ix) for ix in c], separators=(',',':'))   
     return accounts
 
@@ -82,7 +82,7 @@ def default(db):
     d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 1")
     getlastheight = d.fetchone()
     lastheight = getlastheight[0]
-    c = db.execute("SELECT account, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
+    c = db.execute("SELECT ars, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall()
     e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
     block = e.fetchall()
