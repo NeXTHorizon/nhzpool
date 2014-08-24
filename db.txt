@@ -18,6 +18,7 @@ account TEXT,
 heightfrom NUMERIC,
 heightto NUMERIC,
 amount NUMERIC,
+ars TEXT,
 UNIQUE (account));
 
 CREATE TABLE payouts (
