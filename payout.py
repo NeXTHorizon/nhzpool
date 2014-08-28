@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+
 import json
 import urllib
 import urllib2
 import sqlite3
 import ConfigParser
 import sys
+import math
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -30,12 +33,11 @@ def payout():
 
     for (account, amount) in pending.items():
         if amount > getLimit():
-            fee     = ((amount*float(config.get("pool", "feePercent")))/100)
+            fee     = int(math.floor(((amount*float(config.get("pool", "feePercent")))/100)))
             payment = str((amount-fee)-100000000)
             account = str(account)
             fee     = str(fee)
             print "Pay out "+payment+" to "+account+" (keep fee: "+fee+")"
-            c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))
             payload = {
                 'requestType': 'sendMoney',
                 'secretPhrase': config.get("pool", "poolphrase"),
@@ -49,6 +51,7 @@ def payout():
             content = json.loads(opener.open(config.get("pool", "nhzhost")+'/nhz', data=data).read())
             if 'transaction' in content.keys():
                 c.execute("UPDATE accounts SET paid=? WHERE account=?;",(content['transaction'],str(account)))
+                c.execute("INSERT INTO payouts (account, fee, payment) VALUES (?,?,?);",(account, fee, payment))
 
     conn.commit()
     return True

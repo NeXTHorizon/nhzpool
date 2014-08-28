@@ -25,7 +25,7 @@ def main():
         getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
         time.sleep(100)
         
-
+        
 def startForging():
     payload = {
         'requestType': 'getForging',
@@ -51,7 +51,8 @@ def getleased():
         accountadd = lessorAccount['account']
         heightfrom = lessorAccount['currentLeasingHeightFrom']
         heightto = lessorAccount['currentLeasingHeightTo']
-        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount) VALUES (?,?,?,?);",(accountadd, heightfrom, heightto, balance))
+        rs = lessorAccount['accountRS']
+        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount, ars) VALUES (?,?,?,?,?);",(accountadd, heightfrom, heightto, balance, rs))
     
     conn.commit()
     return True                    
@@ -64,8 +65,8 @@ def getNew(newBlocks):
             blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block="+block).read())
 
             c.execute(
-                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee) VALUES (?,?,?);",
-                (blockData['timestamp'],block,blockData['totalFeeNQT'])
+                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);",
+                (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height'])
             )
             
             blockFee = float(blockData['totalFeeNQT'])

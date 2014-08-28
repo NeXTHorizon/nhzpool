@@ -6,21 +6,22 @@ Forging pool for NHZ
 Set up database:
 cat db.txt | sqlite3 pool.db
 
-Edit variables in pool.py
-
-Cron:
-\* * * * * /path/to/pool.py >> /path/to/log
-
-Webserver:
+Edit variables in config.ini
 
 Dependencies:
 pip install bottle bottle-sqlite paste
 
-Run:
-screen -d -m -S poolserver ./webserver.py
+Start Pool Backend and Web Server:
+
+./start.sh
+
+Cron:
+30 00 * * * /path/to/payout.py >> /path/to/log
+
+( Set time you want payouts to run at .eg is everyday at 00:30)
 
 Goto:
-http://localhost:8888/
+http://localhost:8810/
 
 
 

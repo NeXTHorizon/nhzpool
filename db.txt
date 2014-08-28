@@ -2,6 +2,7 @@ CREATE TABLE blocks (
 timestamp NUMERIC,
 block TEXT,
 totalfee NUMERIC,
+height NUMERIC,
 UNIQUE (timestamp));
 
 CREATE TABLE accounts (
@@ -17,10 +18,11 @@ account TEXT,
 heightfrom NUMERIC,
 heightto NUMERIC,
 amount NUMERIC,
+ars TEXT,
 UNIQUE (account));
 
 CREATE TABLE payouts (
 account TEXT,
 fee NUMERIC,
 payment NUMERIC,
-UNIQUE (account, payment))
+UNIQUE (account, payment));

@@ -3,7 +3,6 @@
     <p class="text-muted credit">NHZ Forging Pool GUI by <a href="http://www.shellshockcomputer.com.au">Shellshock</a>. Donate to NHZ-QUA4-XF7V-HUSN-AVN33</p>
   </div>
 </div>
-<script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </body>
 </html>
