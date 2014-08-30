@@ -7,6 +7,7 @@ import sqlite3
 import ConfigParser
 import sys
 import math
+import time
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
@@ -33,6 +34,7 @@ def payout():
 
     for (account, amount) in pending.items():
         if amount > getLimit():
+            time.sleep(60)
             fee     = int(math.floor(((amount*float(config.get("pool", "feePercent")))/100)))
             payment = str((amount-fee)-100000000)
             account = str(account)
