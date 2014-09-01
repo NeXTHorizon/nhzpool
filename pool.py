@@ -6,7 +6,6 @@ import json
 import urllib
 import urllib2
 import sqlite3
-import sys
 import math
 import ConfigParser
 import time
@@ -23,6 +22,7 @@ def main():
         startForging()
         getleased()
         getNew(json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccountBlockIds&account="+config.get("pool", "poolaccount")+"&timestamp="+getTimestamp()).read()))
+        time.sleep(100)
         payout()
         time.sleep(100)
         
