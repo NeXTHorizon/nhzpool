@@ -54,7 +54,7 @@ def apileased():
 @route('/api/payouts')
 def apipayouts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT account, fee, payment FROM payouts").fetchall()
+    c = db.execute("SELECT account, fee, payment FROM payouts DESC").fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
