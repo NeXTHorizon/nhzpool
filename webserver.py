@@ -56,7 +56,7 @@ def apileased():
 
     try:
         leasebal = getaccounts['effectiveBalanceNHZ']
-    except KeyError:
+    except:
         leasebal = 0
 
     return {'blocktime': leasebal}
