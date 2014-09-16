@@ -87,7 +87,10 @@ def default(db):
     e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
     block = e.fetchall()
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    leasebal = getaccounts['effectiveBalanceNHZ'] 
+    try:
+        leasebal = getaccounts['effectiveBalanceNHZ']
+    except KeyError:
+        leasebal = 0
     output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
     return output
 
