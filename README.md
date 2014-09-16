@@ -7,6 +7,7 @@ Prerequisites
 -------------
 
 * Python 2.7.x
+* Python-pip
 * SQLite 3.x
 * virtualenvwrapper (for creation of a virtual Python environment for the pool)
 
@@ -15,6 +16,12 @@ Installation
 
 First we need to create the virtual environment that will contain the required packages.
 
+```
+source /usr/local/bin/virtualenvwrapper.sh
+mkvirtualenv nhzpool
+```
+
+Now to install the required packages.
 ```
 pip install -r requirements.txt
 ```
