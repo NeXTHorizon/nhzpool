@@ -37,11 +37,17 @@ cp config.ini.example config.ini
 ```
 
 nhzhost: The host and port at which to find the NHZ API server
+
 database: The full path to the pool.db file
+
 poolaccount: The numeric account ID for the pool
+
 poolaccountrs: The alphanumeric account ID for the pool
+
 poolphrase: The password for the pool's account. This is needed to send payouts. Keep the setup very secure.
+
 payoutlimit: The minimum amount to pay out
+
 feePercent: The percentage of forged NHZ you wish to charge users
 
 Now you can start Pool Backend and Web Server:
