@@ -63,13 +63,14 @@ def getNew(newBlocks):
     shares = getShares()
     if 'blockIds' in newBlocks:
         for block in newBlocks['blockIds']:
-            blockData = json.loads(urllib2.urlopen("http://api.nhzcrypto.org:7776/nhz?requestType=getBlock&block="+block).read())
-
-            c.execute(
-                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);",
-                (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height'])
-            )
-            
+            blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost2")+"/nhz?requestType=getBlock&block="+block).read())
+            if 'errorCode' in blockData.keys():
+                if blockData['errorCode'] == 5:
+                    time.sleep(120)
+                    return True
+                else:
+                    c.execute("INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);", (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height']))
+                
             blockFee = float(blockData['totalFeeNQT'])
             blockheight = float(blockData['height'])
             if blockFee > 0:
