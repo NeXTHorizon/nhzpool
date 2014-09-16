@@ -33,7 +33,12 @@ def blocktime():
 def apiaccounts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
     getlastheight = db.execute("SELECT height FROM blocks ORDER BY timestamp DESC").fetchone()
-    lastheight = getlastheight[0]
+
+    try:
+        lastheight = getlastheight[0]
+    except:
+        lastheight = 0
+
     c = db.execute("SELECT ars, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight)).fetchall()
     accounts = json.dumps( [dict(ix) for ix in c], separators=(',',':'))   
     return accounts
@@ -48,7 +53,12 @@ def apiblocks(db):
 @route('/api/leased')
 def apileased():
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    leasebal = getaccounts['effectiveBalanceNHZ']
+
+    try:
+        leasebal = getaccounts['effectiveBalanceNHZ']
+    except:
+        leasebal = 0
+
     return {'blocktime': leasebal}
 
 @route('/api/payouts')
@@ -81,7 +91,12 @@ def default(db):
     db.text_factory = str
     d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 1")
     getlastheight = d.fetchone()
-    lastheight = getlastheight[0]
+
+    try:
+        lastheight = getlastheight[0]
+    except:
+        lastheight = 0
+
     c = db.execute("SELECT ars, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall()
     e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
@@ -103,6 +118,12 @@ def static(path):
 def get_favicon():
     response.headers['Cache-Control'] = 'public, max-age=2592000'
     return static('favicon.ico')
+
+@route('/getting_started')
+def getting_started(db):
+    response.headers['Cache-Control'] = 'public, max-age=43200'
+    output = template('gettingstarted')
+    return output
 
 @route('/accounts')
 def accounts(db):
@@ -133,6 +154,6 @@ def paid(db):
     response.headers['Cache-Control'] = 'public, max-age=43200'   
     output = template('paid')
     return output
-	
+    
 #debug(True)    
 run(server=PasteServer, port=8810, host='0.0.0.0')
