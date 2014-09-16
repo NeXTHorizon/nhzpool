@@ -46,17 +46,23 @@ def startForging():
 
 def getleased():
     leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-    for lessor in leasedaccounts['lessors']:
-        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
-        balance = lessorAccount['guaranteedBalanceNQT']
-        accountadd = lessorAccount['account']
-        heightfrom = lessorAccount['currentLeasingHeightFrom']
-        heightto = lessorAccount['currentLeasingHeightTo']
-        rs = lessorAccount['accountRS']
-        c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount, ars) VALUES (?,?,?,?,?);",(accountadd, heightfrom, heightto, balance, rs))
+
+    try:
+        for lessor in leasedaccounts['lessors']:
+            lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
+            balance = lessorAccount['guaranteedBalanceNQT']
+            accountadd = lessorAccount['account']
+            heightfrom = lessorAccount['currentLeasingHeightFrom']
+            heightto = lessorAccount['currentLeasingHeightTo']
+            rs = lessorAccount['accountRS']
+            c.execute("INSERT OR REPLACE INTO leased (account, heightfrom, heightto, amount, ars) VALUES (?,?,?,?,?);",(accountadd, heightfrom, heightto, balance, rs))
     
-    conn.commit()
-    return True                    
+        conn.commit()
+    except KeyError:
+        # If no lessors, just return
+        pass
+
+    return True
     
         
 def getNew(newBlocks):
