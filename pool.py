@@ -46,10 +46,6 @@ def startForging():
 
 def getleased():
     leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
     try:
         for lessor in leasedaccounts['lessors']:
             lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
@@ -64,13 +60,9 @@ def getleased():
     except KeyError:
         # If no lessors, just return
         pass
-<<<<<<< HEAD
-    return True                    
-=======
 
     return True
->>>>>>> upstream/master
-    
+   
         
 def getNew(newBlocks):
 	try:
