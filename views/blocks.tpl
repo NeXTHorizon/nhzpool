@@ -1,5 +1,6 @@
 % include('header.tpl')
         <li><a href="/">Home</a></li>
+        <li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li class="active"><a href="/blocks">Blocks</a></li>
         <li><a href="/payouts">Payouts</a></li>

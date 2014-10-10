@@ -1,2 +1,2 @@
-screen -d -m -S nhzpool ./pool.py >> pool.log
-screen -d -m -S poolserver ./webserver.py
+screen -d -m -S NHZ_POOL ./pool.py >> pool.log
+screen -d -m -S NHZ_WEB ./webserver.py
