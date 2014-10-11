@@ -39,14 +39,14 @@ def apiaccounts(db):
     except:
         lastheight = 0
 
-    c = db.execute("SELECT ars, heightfrom, heightto, amount FROM leased WHERE heightto > %s" % (lastheight)).fetchall()
+    c = db.execute("SELECT ars, heightfrom, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased WHERE heightto > %s" % (lastheight)).fetchall()
     accounts = json.dumps( [dict(ix) for ix in c], separators=(',',':'))   
     return accounts
 
 @route('/api/blocks')
 def apiblocks(db):
     response.headers['Cache-Control'] = 'public, max-age=1800'
-    c = db.execute("SELECT height, timestamp, totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC").fetchall()
+    c = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC").fetchall()
     blocks = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return blocks
 
@@ -64,21 +64,21 @@ def apileased():
 @route('/api/payouts')
 def apipayouts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT account, fee, payment FROM payouts DESC").fetchall()
+    c = db.execute("SELECT account, CAST(fee AS FLOAT)/100000000 AS fee, payment FROM payouts DESC").fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/paid')
 def apipaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
+    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/unpaid')
 def apiunpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC").fetchall()   
+    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
     
@@ -89,7 +89,7 @@ def default(db):
     poolaccount = config.get("pool", "poolaccountrs")
     poolfee = config.get("pool", "feePercent")
     db.text_factory = str
-    d = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 1")
+    d = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 1")
     getlastheight = d.fetchone()
 
     try:
@@ -97,9 +97,9 @@ def default(db):
     except:
         lastheight = 0
 
-    c = db.execute("SELECT ars, heightto, amount FROM leased WHERE heightto > %s" % (lastheight))
+    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased WHERE heightto > %s" % (lastheight))
     result = c.fetchall()
-    e = db.execute("SELECT height, timestamp, totalfee FROM blocks ORDER BY timestamp DESC limit 5")
+    e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 5")
     block = e.fetchall()
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     try:
