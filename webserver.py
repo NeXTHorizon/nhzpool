@@ -97,7 +97,7 @@ def default(db):
     except:
         lastheight = 0
 
-    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased WHERE heightto > %s" % (lastheight))
+    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased WHERE heightto > %s DESC limit 5" % (lastheight))
     result = c.fetchall()
     e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 5")
     block = e.fetchall()
