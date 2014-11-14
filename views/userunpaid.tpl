@@ -15,13 +15,13 @@
   
   <div class="text-center">
 	<div class="page-header">
-		<h1>Paid Transactions:</h1>
+		<h1>Unpaid Transactions:</h1>
 	</div>
 </div>
 <div class="table-responsive">
 <div id="loctable"></div>
 <script>
-$.getJSON("/api/userpaid/{{user}}", function(data) {
+$.getJSON("/api/userunpaid/{{user}}", function(data) {
     $("#loctable").mrjsontable({
         tableClass: "my-table table-striped table-bordered table-condensed table-hover",
         pageSize: 10, //you can change the page size here
