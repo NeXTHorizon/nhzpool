@@ -9,11 +9,19 @@ import json
 import urllib
 import urllib2
 import datetime
+import json
+from bson import json_util
+from bson.objectid import ObjectId
+
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
 
 install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
+
+
+def toJson(data):
+    return json.dumps(data, default=json_util.default)
 
 @route('/api/btime')
 def blocktime():
@@ -82,6 +90,17 @@ def apiunpaid(db):
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
     
+@route('/api/userunpaid:user#[0-9]+#')
+def apiuserunpaid(db, user):
+    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
+    pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
+    return pays
+
+@route('/api/userpaid:user#[0-9]+#')
+def apiuserpaid(db, user):
+    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
+    pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
+    return pays
             
 @route('/')
 def default(db):
