@@ -90,13 +90,13 @@ def apiunpaid(db):
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
     
-@route('/api/userunpaid:user#[0-9]+#')
+@route('/api/userunpaid/:user#[0-9]+#')
 def apiuserunpaid(db, user):
     c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
-@route('/api/userpaid:user#[0-9]+#')
+@route('/api/userpaid/:user#[0-9]+#')
 def apiuserpaid(db, user):
     c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
@@ -139,9 +139,19 @@ def get_favicon():
     return static('favicon.ico')
 
 @route('/getting_started')
-def getting_started(db):
+def getting_started():
     response.headers['Cache-Control'] = 'public, max-age=43200'
     output = template('gettingstarted')
+    return output
+
+@route('/userpaid/:user')
+def userpaid(user):
+    output = template('userpaid', user=user)
+    return output
+
+@route('/userunpaid/:user')
+def userunpaid(user):
+    output = template('userunpaid', user=user)
     return output
 
 @route('/accounts')
