@@ -3,7 +3,7 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer#, debug
+from bottle import route, install, run, template, static_file, response, PasteServer, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
@@ -144,9 +144,20 @@ def getting_started():
     output = template('gettingstarted')
     return output
 
-@route('/user/:user')
-def userpaid(user):
-    output = template('user', user=user)
+@route('/user/:aid')
+def userpaid(aid, db):
+    if aid.isdigit():
+        user = aid
+        c = db.execute("SELECT ars FROM leased WHERE account LIKE ?", (aid,)).fetchone()
+        for ids in c:
+            aid = ids            
+        
+    else:
+        c = db.execute("SELECT account FROM leased WHERE ars LIKE ?", (aid,)).fetchone()
+        for users in c:
+            user = users            
+                
+    output = template('user', user=user, aid=aid)
     return output
 
 @route('/accounts')
@@ -179,5 +190,5 @@ def paid(db):
     output = template('paid')
     return output
     
-#debug(True)    
+debug(True)    
 run(server=PasteServer, port=8810, host='0.0.0.0')
