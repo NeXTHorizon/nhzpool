@@ -144,14 +144,9 @@ def getting_started():
     output = template('gettingstarted')
     return output
 
-@route('/userpaid/:user')
+@route('/user/:user')
 def userpaid(user):
-    output = template('userpaid', user=user)
-    return output
-
-@route('/userunpaid/:user')
-def userunpaid(user):
-    output = template('userunpaid', user=user)
+    output = template('user', user=user)
     return output
 
 @route('/accounts')
