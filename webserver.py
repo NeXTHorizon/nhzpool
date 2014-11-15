@@ -3,25 +3,18 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer, debug
+from bottle import route, install, run, template, static_file, response, PasteServer, post, request#, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
 import urllib2
 import datetime
-import json
-from bson import json_util
-from bson.objectid import ObjectId
 
 
 config = ConfigParser.RawConfigParser()
 config.read('config.ini')
 
 install(SQLitePlugin(dbfile=(config.get("pool", "database"))))
-
-
-def toJson(data):
-    return json.dumps(data, default=json_util.default)
 
 @route('/api/btime')
 def blocktime():
@@ -144,22 +137,6 @@ def getting_started():
     output = template('gettingstarted')
     return output
 
-@route('/user/:aid')
-def userpaid(aid, db):
-    if aid.isdigit():
-        user = aid
-        c = db.execute("SELECT ars FROM leased WHERE account LIKE ?", (aid,)).fetchone()
-        for ids in c:
-            aid = ids            
-        
-    else:
-        c = db.execute("SELECT account FROM leased WHERE ars LIKE ?", (aid,)).fetchone()
-        for users in c:
-            user = users            
-                
-    output = template('user', user=user, aid=aid)
-    return output
-
 @route('/accounts')
 def accounts(db):
     response.headers['Cache-Control'] = 'public, max-age=43200'   
@@ -189,6 +166,23 @@ def paid(db):
     response.headers['Cache-Control'] = 'public, max-age=43200'   
     output = template('paid')
     return output
+
+@post('/user')
+def user(db):
+    aid = request.forms.get('username')
+    if aid.isdigit():
+        user = aid
+        c = db.execute("SELECT ars FROM leased WHERE account LIKE ?", (aid,)).fetchone()
+        for ids in c:
+            aid = ids            
+        
+    else:
+        c = db.execute("SELECT account FROM leased WHERE ars LIKE ?", (aid,)).fetchone()
+        for users in c:
+            user = users            
+                
+    output = template('user', user=user, aid=aid)
+    return output
     
-debug(True)    
+#debug(True)    
 run(server=PasteServer, port=8810, host='0.0.0.0')

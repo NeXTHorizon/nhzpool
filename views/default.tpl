@@ -7,6 +7,16 @@
 		<li><a href="/unpaid">Unpaid</a></li>
 		<li><a href="/paid">Paid</a></li>
         </ul>
+        <div class="col-sm-3 col-md-3 pull-right">
+            <form class="navbar-form" action="/user" role="form" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Account Name" name="username">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+            </div>
       </div><!--/.nav-collapse -->
     </div>
   </div>
