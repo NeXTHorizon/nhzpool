@@ -85,14 +85,14 @@ def apiunpaid(db):
     
 @route('/api/userunpaid/:user#[0-9]+#')
 def apiuserunpaid(db, user):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=600'
     c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/userpaid/:user#[0-9]+#')
 def apiuserpaid(db, user):
-    response.headers['Cache-Control'] = 'public, max-age=3600'
+    response.headers['Cache-Control'] = 'public, max-age=600'
     c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
