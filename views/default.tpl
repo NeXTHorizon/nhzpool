@@ -32,7 +32,7 @@
   <div class="container">
   <div class="text-center">
     <div class="page-header">
-      <h1>NHZ Forging Pool</h1>
+      <h1>Horizon Forging Pool</h1>
     </div>
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
