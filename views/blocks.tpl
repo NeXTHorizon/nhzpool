@@ -3,7 +3,7 @@
         <li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li class="active"><a href="/blocks">Blocks</a></li>
-        <<li class="dropdown">
+        <li class="dropdown">
           <a href="/payouts" class="dropdown-toggle" data-toggle="dropdown">
             Payout Data<b class="caret"></b>
           </a>
