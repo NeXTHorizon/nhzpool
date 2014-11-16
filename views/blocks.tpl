@@ -7,6 +7,16 @@
 		<li><a href="/unpaid">Unpaid</a></li>
 		<li><a href="/paid">Paid</a></li>
         </ul>
+        <div class="col-sm-3 col-md-3 pull-right">
+            <form class="navbar-form" action="/user" role="form" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Account Name" name="username">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+         </div>
       </div><!--/.nav-collapse -->
     </div>
   </div>
@@ -28,29 +38,31 @@
   });
     </script>
 <div class="table-responsive">
-<div id="loctable"></div>
+<table id="paid" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Height</th>
+                <th>Total Fee</th>
+            </tr>
+        </thead>
+    </table>
 <script>
-$.getJSON("/api/blocks", function(data) {
-    $("#loctable").mrjsontable({
-        tableClass: "my-table table-striped table-bordered table-condensed table-hover",
-        pageSize: 10, //you can change the page size here
-        columns: [
-            new $.fn.mrjsontablecolumn({
-                heading: "Timestamp",
-                data: "timestamp"
-            }),
-            new $.fn.mrjsontablecolumn({
-                heading: "Height",
-                data: "height"
-            }),
-            new $.fn.mrjsontablecolumn({
-                heading: "Total Fee",
-                data: "totalfee"
-            })
+$(document).ready(function() {
+    $('#paid').dataTable( {
+        "ajax": {
+            "url": "/api/blocks",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "timestamp" },
+            { "data": "height" },
+            { "data": "totalfee" }
         ],
-        data: data
-    });
-});
+        "order": [[ 0, "desc" ]],
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
+    } );
+} );
 </script>
 </div>
 </div>  

@@ -6,8 +6,8 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/static/custom.css" rel="stylesheet">
     <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script src="/static/mrjsontable/scripts/mrjsontable.js"></script>
-	<link href="/static/mrjsontable/css/mrjsontable.css" rel="stylesheet" />
+    <script type='text/javascript' src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+    <link href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.css" rel="stylesheet">
   </head>
   <body>
     <!-- Wrap all page content here -->
