@@ -3,9 +3,16 @@
         <li><a href="/getting_started">Getting Started</a></li>
         <li class="active"><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
-        <li><a href="/payouts">Payouts</a></li>
-		<li><a href="/unpaid">Unpaid</a></li>
-		<li><a href="/paid">Paid</a></li>
+        <<li class="dropdown">
+          <a href="/payouts" class="dropdown-toggle" data-toggle="dropdown">
+            Payout Data<b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/payouts">Payouts</a></li>
+			<li><a href="/unpaid">Unpaid</a></li>
+			<li><a href="/paid">Paid</a></li>        
+          </ul>
+        </li>
         </ul>
         <div class="col-sm-3 col-md-3 pull-right">
             <form class="navbar-form" action="/user" role="form" method="post">
