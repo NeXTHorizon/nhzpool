@@ -111,9 +111,9 @@ def default(db):
     except:
         lastheight = 0
 
-    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased ORDER BY heightfrom DESC limit 5")
+    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased ORDER BY heightfrom DESC limit 6")
     result = c.fetchall()
-    e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 5")
+    e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 6")
     block = e.fetchall()
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     try:
