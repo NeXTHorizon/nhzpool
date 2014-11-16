@@ -85,7 +85,7 @@ $(document).ready(function() {
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
+        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
     } );
 } );
 </script>
