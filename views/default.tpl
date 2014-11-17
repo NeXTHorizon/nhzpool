@@ -43,7 +43,7 @@
 </div>
 <div class="row">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Active Accounts<p><small>Last Leased</p></small></h3>
+  <h3>Accounts<p><small>Last Leased</p></small></h3>
   <div class="table-responsive">
 <table class="table table-striped table-bordered table-condensed table-hover">
 <tr><td><strong>Account</strong></td><td><strong>Last Block</strong></td><td><strong>Amount</strong></td></tr>
