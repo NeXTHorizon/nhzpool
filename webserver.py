@@ -185,11 +185,18 @@ def user(db):
             
     cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchone()
     for d in cpaid:
-        paid = d
+        try:
+            paid = float(d/100000000)
+        except TypeError:
+            paid = 0
+        
     cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchone()
     for e in cunpaid:
-        unpaid = e/100000000
-    
+        try:
+            unpaid = float(e/100000000)
+        except TypeError:
+            unpaid = 0
+        
     output = template('user', user=user, aid=aid, paid=paid, unpaid=unpaid)
     return output
     
