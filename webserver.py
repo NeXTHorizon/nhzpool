@@ -182,8 +182,15 @@ def user(db):
         c = db.execute("SELECT account FROM leased WHERE ars LIKE ?", (aid,)).fetchone()
         for users in c:
             user = users            
-                
-    output = template('user', user=user, aid=aid)
+            
+    cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchone()
+    for d in cpaid:
+        paid = d
+    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchone()
+    for e in cunpaid:
+        unpaid = e/100000000
+    
+    output = template('user', user=user, aid=aid, paid=paid, unpaid=unpaid)
     return output
     
 #debug(True)    

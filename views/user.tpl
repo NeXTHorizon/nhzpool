@@ -37,7 +37,7 @@
 
 <div class="row">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Paid</h3>
+  <h3>Paid <small>{{paid}}</small></h3>
   <div class="table-responsive">
   <table id="paid" class="display" cellspacing="0" width="100%">
         <thead>
@@ -47,6 +47,7 @@
                 <th>Amount</th>
             </tr>
         </thead>
+        
     </table>
 <script>
 $(document).ready(function() {
@@ -68,7 +69,7 @@ $(document).ready(function() {
 </div>
   </div>
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Unpaid</h3>
+  <h3>Unpaid <small>{{unpaid}}</small></h3>
     <div class="table-responsive">
 	<table id="unpaid" class="display" cellspacing="0" width="100%">
         <thead>
@@ -78,6 +79,7 @@ $(document).ready(function() {
                 <th>Amount</th>
             </tr>
         </thead>
+        
     </table>
 <script>
 $(document).ready(function() {
@@ -92,8 +94,8 @@ $(document).ready(function() {
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
-    } );
+        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]    
+   } );
 } );
 </script>
 </div>
