@@ -120,7 +120,22 @@ def default(db):
         leasebal = getaccounts['effectiveBalanceNHZ']
     except KeyError:
         leasebal = 0
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
+        
+    cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0").fetchone()
+    for d in cpaid:
+        try:
+            paid = float(d)/100000000
+        except TypeError:
+            paid = 0
+        
+    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0").fetchone()
+    for e in cunpaid:
+        try:
+            unpaid = float(e)/100000000
+        except TypeError:
+            unpaid = 0
+            
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, paid=paid, unpaid=unpaid)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -199,6 +214,6 @@ def user(db):
         
     output = template('user', user=user, aid=aid, paid=paid, unpaid=unpaid)
     return output
-    
+        
 #debug(True)    
 run(server=PasteServer, port=8810, host='0.0.0.0')
