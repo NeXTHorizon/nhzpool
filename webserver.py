@@ -102,15 +102,6 @@ def default(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
     poolaccount = config.get("pool", "poolaccountrs")
     poolfee = config.get("pool", "feePercent")
-    db.text_factory = str
-    d = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 1")
-    getlastheight = d.fetchone()
-
-    try:
-        lastheight = getlastheight[0]
-    except:
-        lastheight = 0
-
     c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased ORDER BY heightfrom DESC limit 6")
     result = c.fetchall()
     e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 6")
