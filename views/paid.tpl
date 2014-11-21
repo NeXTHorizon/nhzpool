@@ -33,6 +33,7 @@
   <div class="text-center">
 	<div class="page-header">
 		<h1>Paid Transactions:</h1>
+		<h4>Total Paid: <small>{{paid}} NHZ</small></h4>
 	</div>
 </div>
 <div class="table-responsive">

@@ -121,22 +121,7 @@ def default(db):
     except KeyError:
         leasebal = 0
         
-    cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0").fetchone()
-    for d in cpaid:
-        try:
-            paid = float(d)/100000000
-        except TypeError:
-            paid = 0
-        
-    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0").fetchone()
-    for e in cunpaid:
-        try:
-            unpaid = float(e)/100000000
-        except TypeError:
-            unpaid = 0
-    
-    print cunpaid        
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, paid=paid)
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -176,13 +161,27 @@ def payouts(db):
 @route('/unpaid')
 def unpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=43200'
-    output = template('unpaid')
+    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0").fetchone()
+    for e in cunpaid:
+        try:
+            unpaid = float(e)/100000000
+        except TypeError:
+            unpaid = 0
+       
+    output = template('unpaid', unpaid=unpaid)
     return output
 
 @route('/paid')
 def paid(db):
-    response.headers['Cache-Control'] = 'public, max-age=43200'   
-    output = template('paid')
+    response.headers['Cache-Control'] = 'public, max-age=43200'            
+    cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0").fetchone()
+    for d in cpaid:
+        try:
+            paid = float(d)/100000000
+        except TypeError:
+            paid = 0
+
+    output = template('paid', paid=paid)
     return output
 
 @post('/user')
