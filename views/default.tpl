@@ -39,7 +39,6 @@
   <h3>Pool Account: <small>{{pa}}</small></h3>
    	<h4>Leased Amount: <small>{{nhzb}} NHZ</small></h4>
     <h4>Total Paid: <small>{{paid}}</small></h4>
-    <h4>Unpaid: <small>{{unpaid}}</small></h4>
     <h4>Pool Fee is: <small>{{fee}}%</small></h4>
   </div> 
 </div>

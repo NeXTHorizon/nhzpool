@@ -134,8 +134,9 @@ def default(db):
             unpaid = float(e)/100000000
         except TypeError:
             unpaid = 0
-            
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, paid=paid, unpaid=unpaid)
+    
+    print cunpaid        
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, paid=paid)
     return output
 
 @route('/static/:path#.+#', name='static')
