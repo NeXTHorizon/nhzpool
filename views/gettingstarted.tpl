@@ -37,7 +37,7 @@
 <div class="row">
     <div class="text-center">
         <p>Thanks to Nick of Cryptoπa for this excellent tutorial on leasing your balance to our forge pool.</p>
-        <iframe width="640" height="480" src="//www.youtube.com/watch?v=syl_338WzlE" frameborder="0" allowfullscreen></iframe>
+        <iframe width="640" height="480" src="//www.youtube.com/embed/syl_338WzlE" frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
 </div>  
