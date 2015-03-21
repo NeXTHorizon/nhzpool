@@ -2,7 +2,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
-        <li class="active"><a href="/blocks">Blocks</a></li>
+        <li><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
           <a href="/payouts" class="dropdown-toggle" data-toggle="dropdown">
             Payout Data<b class="caret"></b>
@@ -27,50 +27,79 @@
       </div><!--/.nav-collapse -->
     </div>
   </div>
-  
+
 <div class="container">
   
   <div class="text-center">
-  	<div class="page-header">
-	<h1>Block List:</h1>
-  	</div>
-	<div class="col-lg-12">
-	<h3>Estimated Time</h3>    
-    <p><div id="btime"></div></p>
+	<div class="page-header">
+		<h1>{{aid}}<p><small>{{user}}</small></p></h1>
 	</div>
-	<script>
-  $.getJSON('/api/btime', function(data) {
-        var output="<p><strong>Until Next Block: </strong>" + data.blocktime + "</p>";
-        document.getElementById("btime").innerHTML=output;
-  });
-    </script>
-<div class="table-responsive">
-<table id="paid" class="display" cellspacing="0" width="100%">
+
+<div class="row">
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+  <h3>Paid <small>{{paid}}</small></h3>
+  <div class="table-responsive">
+  <table id="paid" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th>Timestamp</th>
-                <th>Height</th>
-                <th>Total Fee</th>
+                <th>Blocktime</th>
+                <th>Percentage</th>
+                <th>Amount</th>
             </tr>
         </thead>
+        
     </table>
 <script>
 $(document).ready(function() {
     $('#paid').dataTable( {
         "ajax": {
-            "url": "/api/blocks",
+            "url": "/api/userpaid/{{user}}",
             "dataSrc": ""
         },
         "columns": [
-            { "data": "timestamp" },
-            { "data": "height" },
-            { "data": "totalfee" }
+            { "data": "blocktime" },
+            { "data": "percentage" },
+            { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
         "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
     } );
 } );
 </script>
+</div>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+  <h3>Unpaid <small>{{unpaid}}</small></h3>
+    <div class="table-responsive">
+	<table id="unpaid" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Blocktime</th>
+                <th>Percentage</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        
+    </table>
+<script>
+$(document).ready(function() {
+    $('#unpaid').dataTable( {
+        "ajax": {
+            "url": "/api/userunpaid/{{user}}",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "blocktime" },
+            { "data": "percentage" },
+            { "data": "amount" }
+        ],
+        "order": [[ 0, "desc" ]],
+        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]    
+   } );
+} );
+</script>
+</div>
+</div>
 </div>
 </div>  
 </div>

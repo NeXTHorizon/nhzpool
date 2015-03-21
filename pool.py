@@ -46,7 +46,6 @@ def startForging():
 
 def getleased():
     leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
-
     try:
         for lessor in leasedaccounts['lessors']:
             lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
@@ -63,37 +62,37 @@ def getleased():
         pass
 
     return True
-    
+   
         
 def getNew(newBlocks):
-    shares = getShares()
-    if 'blockIds' in newBlocks:
-        for block in newBlocks['blockIds']:
-            blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getBlock&block="+block).read())
-
-            c.execute(
-                "INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);",
-                (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height'])
-            )
-            
-            blockFee = float(blockData['totalFeeNQT'])
-            blockheight = float(blockData['height'])
-            if blockFee > 0:
-                for (account, amount) in shares.items():
-                    if account is not config.get("pool", "poolaccount"):
-                        lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
-                        heightfrom = lessorAccount['currentLeasingHeightFrom']
-                        if heightfrom < blockheight:                                           
-                            payout = math.floor(blockFee * (amount['percentage']/100))                     
+	try:
+		shares = getShares()
+		if 'blockIds' in newBlocks:
+			for block in newBlocks['blockIds']:
+				print block
+				blockData = json.loads(urllib2.urlopen(config.get("pool", "nhzhost2")+"/nhz?requestType=getBlock&block="+block).read())
+				c.execute("INSERT OR IGNORE INTO blocks (timestamp, block, totalfee, height) VALUES (?,?,?,?);", (blockData['timestamp'],block,blockData['totalFeeNQT'],blockData['height']))
+                
+				blockFee = float(blockData['totalFeeNQT'])
+				blockheight = float(blockData['height'])
+				if blockFee > 0:
+					for (account, amount) in shares.items():
+						if account is not config.get("pool", "poolaccount"):
+							lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
+							heightfrom = lessorAccount['currentLeasingHeightFrom']
+							if heightfrom < blockheight:                                           
+								payout = math.floor(blockFee * (amount['percentage']/100))                     
                             
-                            c.execute(
-                                    "INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
-                            (blockData['timestamp'],account,amount['percentage'],payout,False)
-                        )
+								c.execute(
+										"INSERT OR IGNORE INTO accounts (blocktime, account, percentage, amount, paid) VALUES (?,?,?,?,?);",
+								(blockData['timestamp'],account,amount['percentage'],payout,False)
+							)
 
-    conn.commit()
-    return True
-
+		conn.commit()
+	except KeyError:
+		pass
+    
+	return True
 
 def getTimestamp():
     timestamp = config.get("pool", "poolstart")

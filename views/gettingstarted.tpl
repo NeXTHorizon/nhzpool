@@ -1,8 +1,8 @@
 % include('header.tpl')
-        <li><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+<li><a href="/">Home</a></li>
+        <li class="active"><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
-        <li class="active"><a href="/blocks">Blocks</a></li>
+        <li><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
           <a href="/payouts" class="dropdown-toggle" data-toggle="dropdown">
             Payout Data<b class="caret"></b>
@@ -32,45 +32,13 @@
   
   <div class="text-center">
   	<div class="page-header">
-	<h1>Block List:</h1>
+	<h1>Getting Started:</h1>
   	</div>
-	<div class="col-lg-12">
-	<h3>Estimated Time</h3>    
-    <p><div id="btime"></div></p>
-	</div>
-	<script>
-  $.getJSON('/api/btime', function(data) {
-        var output="<p><strong>Until Next Block: </strong>" + data.blocktime + "</p>";
-        document.getElementById("btime").innerHTML=output;
-  });
-    </script>
-<div class="table-responsive">
-<table id="paid" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>Height</th>
-                <th>Total Fee</th>
-            </tr>
-        </thead>
-    </table>
-<script>
-$(document).ready(function() {
-    $('#paid').dataTable( {
-        "ajax": {
-            "url": "/api/blocks",
-            "dataSrc": ""
-        },
-        "columns": [
-            { "data": "timestamp" },
-            { "data": "height" },
-            { "data": "totalfee" }
-        ],
-        "order": [[ 0, "desc" ]],
-        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
-    } );
-} );
-</script>
+<div class="row">
+    <div class="text-center">
+        <p>Thanks to Nick of Cryptoπa for this excellent tutorial on leasing your balance to our forge pool.</p>
+        <iframe width="640" height="480" src="//www.youtube.com/embed/syl_338WzlE" frameborder="0" allowfullscreen></iframe>
+    </div>
 </div>
 </div>  
 </div>
