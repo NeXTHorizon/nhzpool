@@ -3,12 +3,13 @@
 # author: brendan@shellshockcomputer.com.au
 
 import ConfigParser
-from bottle import route, install, run, template, static_file, response, PasteServer, post, request#, debug
+from bottle import route, install, run, template, static_file, response, PasteServer, post, get, request, debug
 from bottle_sqlite import SQLitePlugin
 import json
 import urllib
 import urllib2
 import datetime
+import math
 
 
 config = ConfigParser.RawConfigParser()
@@ -47,7 +48,7 @@ def apiaccounts(db):
 @route('/api/blocks')
 def apiblocks(db):
     response.headers['Cache-Control'] = 'public, max-age=1800'
-    c = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC").fetchall()
+    c = db.execute("SELECT height, datetime(timestamp+1395526942, 'unixepoch', 'localtime') as timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks WHERE totalfee > 0 ORDER BY timestamp DESC").fetchall()
     blocks = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return blocks
 
@@ -65,35 +66,35 @@ def apileased():
 @route('/api/payouts')
 def apipayouts(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT account, CAST(fee AS FLOAT)/100000000 AS fee, payment FROM payouts DESC").fetchall()
+    c = db.execute("SELECT account, CAST(fee AS FLOAT)/100000000 AS fee, CAST(payment AS FLOAT)/100000000 AS payment FROM payouts DESC").fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/paid')
 def apipaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
+    c = db.execute("SELECT  datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
 @route('/api/unpaid')
 def apiunpaid(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
-    c = db.execute("SELECT blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC").fetchall()   
+    c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, account, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 ORDER BY blocktime DESC").fetchall()   
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
     
-@route('/api/userunpaid/:user#[0-9]+#')
+@route('/api/userunpaid/:user#NHZ-[0-9A-Z-]+#')
 def apiuserunpaid(db, user):
     response.headers['Cache-Control'] = 'public, max-age=600'
-    c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
+    c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
 
-@route('/api/userpaid/:user#[0-9]+#')
+@route('/api/userpaid/:user#NHZ-[0-9A-Z-]+#')
 def apiuserpaid(db, user):
     response.headers['Cache-Control'] = 'public, max-age=600'
-    c = db.execute("SELECT blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
+    c = db.execute("SELECT datetime(blocktime+1395526942, 'unixepoch', 'localtime') as blocktime, percentage, CAST(amount AS FLOAT)/100000000 AS amount FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchall()
     pays = json.dumps( [dict(ix) for ix in c], separators=(',',':'))
     return pays
             
@@ -102,17 +103,24 @@ def default(db):
     response.headers['Cache-Control'] = 'public, max-age=3600'
     poolaccount = config.get("pool", "poolaccountrs")
     poolfee = config.get("pool", "feePercent")
-    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased ORDER BY heightfrom DESC limit 6")
+    payoutlimit = config.get("pool", "payoutlimit")
+    c = db.execute("SELECT ars, heightto, CAST(amount AS FLOAT)/100000000 AS amount FROM leased ORDER BY heightfrom DESC limit 10")
     result = c.fetchall()
-    e = db.execute("SELECT height, timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 6")
+    e = db.execute("SELECT height, datetime(timestamp+1395526942, 'unixepoch', 'localtime') as timestamp, CAST(totalfee AS FLOAT)/100000000 AS totalfee FROM blocks ORDER BY timestamp DESC limit 10")
     block = e.fetchall()
+    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0").fetchone()
+    for r in cunpaid:
+        try:
+            unpaid = math.trunc(float(r)/100000000)
+        except TypeError:
+            unpaid = 0
     getaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
     try:
         leasebal = getaccounts['effectiveBalanceNHZ']
     except KeyError:
         leasebal = 0
         
-    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal)
+    output = template('default', pa=poolaccount, fee=poolfee, rows=result, blocks=block, nhzb=leasebal, payoutlimit=payoutlimit, unpaid=unpaid)
     return output
 
 @route('/static/:path#.+#', name='static')
@@ -175,20 +183,32 @@ def paid(db):
     output = template('paid', paid=paid)
     return output
 
+@get('/user')
+def user(db):
+    aid = request.GET.get('username')
+    user=aid
+    cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchone()
+    for d in cpaid:
+        try:
+            paid = float(d)/100000000
+        except TypeError:
+            paid = 0
+        
+    cunpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid=0 and account LIKE ?", (user,)).fetchone()
+    for e in cunpaid:
+        try:
+            unpaid = float(e)/100000000
+        except TypeError:
+            unpaid = 0
+        
+    output = template('user', user=user, aid=aid, paid=paid, unpaid=unpaid)
+    return output
+
+
 @post('/user')
 def user(db):
     aid = request.forms.get('username')
-    if aid.isdigit():
-        user = aid
-        c = db.execute("SELECT ars FROM leased WHERE account LIKE ?", (aid,)).fetchone()
-        for ids in c:
-            aid = ids            
-        
-    else:
-        c = db.execute("SELECT account FROM leased WHERE ars LIKE ?", (aid,)).fetchone()
-        for users in c:
-            user = users            
-            
+    user=aid
     cpaid = db.execute("SELECT sum(amount) FROM accounts WHERE paid>0 and account LIKE ?", (user,)).fetchone()
     for d in cpaid:
         try:
@@ -207,4 +227,4 @@ def user(db):
     return output
         
 #debug(True)    
-run(server=PasteServer, port=8810, host='0.0.0.0')
+run(server=PasteServer, port=config.get("pool", "port"), host='0.0.0.0')

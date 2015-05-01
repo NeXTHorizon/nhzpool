@@ -1,4 +1,4 @@
-<div id="footer">
+<div id="footer" align='center'>
   <div class="container">
     <p class="text-muted credit">Horizon Forging Pool UI by <a href="http://www.shellshockcomputer.com.au">Shellshock</a>. Donate to NHZ-QUA4-XF7V-HUSN-AVN33</p>
   </div>

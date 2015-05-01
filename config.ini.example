@@ -8,3 +8,4 @@ poolaccountrs = NHZ-4444-4444-4444-55555
 poolphrase  = A-B_C\\D$E;F\"G'1.2;3/
 payoutlimit = 100
 feePercent  = 1
+port        = 8810

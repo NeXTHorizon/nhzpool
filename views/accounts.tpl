@@ -1,6 +1,6 @@
 % include('header.tpl')
         <li><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+	<li><a href="/getting_started">Getting Started</a></li>
         <li class="active"><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
@@ -52,13 +52,17 @@ $(document).ready(function() {
             "dataSrc": ""
         },
         "columns": [
-            { "data": "ars" },
+            { "data": "ars", "sClass":"left" },
             { "data": "heightfrom" },
             { "data": "heightto" },
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+	    $('td:eq(0)', nRow).html('<a href="/user?username=' + aData.ars + '">' + aData.ars + '</a>');
+	return nRow;
+	}
     } );
 } );
 </script>
@@ -67,4 +71,5 @@ $(document).ready(function() {
 </div>
 </div>
 </div>
+
 % include('footer.tpl')

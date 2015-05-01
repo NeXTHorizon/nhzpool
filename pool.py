@@ -45,12 +45,12 @@ def startForging():
     return True
 
 def getleased():
-    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    leasedaccounts = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
     try:
-        for lessor in leasedaccounts['lessors']:
+        for lessor in leasedaccounts['lessorsRS']:
             lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
             balance = lessorAccount['guaranteedBalanceNQT']
-            accountadd = lessorAccount['account']
+            accountadd = lessorAccount['accountRS']
             heightfrom = lessorAccount['currentLeasingHeightFrom']
             heightto = lessorAccount['currentLeasingHeightTo']
             rs = lessorAccount['accountRS']
@@ -77,7 +77,7 @@ def getNew(newBlocks):
 				blockheight = float(blockData['height'])
 				if blockFee > 0:
 					for (account, amount) in shares.items():
-						if account is not config.get("pool", "poolaccount"):
+						if account is not config.get("pool", "poolaccountRS"):
 							lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+account).read())
 							heightfrom = lessorAccount['currentLeasingHeightFrom']
 							if heightfrom < blockheight:                                           
@@ -107,15 +107,15 @@ def getTimestamp():
 
 
 def getShares():
-    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccount")).read())
+    poolAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+config.get("pool", "poolaccountRS")).read())
     totalAmount = 0
     if 'guaranteedBalanceNQT' in poolAccount:
         totalAmount  = float(poolAccount['guaranteedBalanceNQT'])
 
-    leasedAmount = { config.get("pool", "poolaccount"): { 'amount': totalAmount } }
+    leasedAmount = { config.get("pool", "poolaccountRS"): { 'amount': totalAmount } }
 
     if 'lessors' in poolAccount:
-        for lessor in poolAccount['lessors']:
+        for lessor in poolAccount['lessorsRS']:
             lessorAccount = json.loads(urllib2.urlopen(config.get("pool", "nhzhost")+"/nhz?requestType=getAccount&account="+lessor).read())
             leasedAmount[lessor] = { 'amount': float(lessorAccount['guaranteedBalanceNQT']) }
             totalAmount += float(lessorAccount['guaranteedBalanceNQT'])

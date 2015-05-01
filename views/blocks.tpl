@@ -1,6 +1,6 @@
 % include('header.tpl')
         <li><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+	<li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li class="active"><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
@@ -67,7 +67,7 @@ $(document).ready(function() {
             { "data": "totalfee" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
     } );
 } );
 </script>

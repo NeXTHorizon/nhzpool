@@ -1,6 +1,6 @@
 % include('header.tpl')
         <li class="active"><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+	<li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
@@ -37,8 +37,8 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <h3>Pool Account: <small>{{pa}}</small></h3>
-   	<h4>Leased Amount: <small>{{nhzb}} NHZ</small>&nbsp;Pool Fee is: <small>{{fee}}%</small></h4>
-    <h4>(Mine Horizon with Scrypt and X11 at <a href="http://www.hzmultipool.com/">Horizon Multipool</a>)</h4>
+   	<h4>Leased Amount: <small>{{nhzb}} HZ</small>&nbsp;Pool Fee is: <small>{{fee}}% </small></h4>
+	<h4>&nbsp;Pool Pay Out Limit is: <small>{{payoutlimit}} HZ</small>&nbspTotal Unpaid: <small>{{unpaid}} HZ</small></h4>
   </div> 
 </div>
 <div class="row">
@@ -49,9 +49,9 @@
 <tr><td><strong>Account</strong></td><td><strong>Last Block</strong></td><td><strong>Amount</strong></td></tr>
 %for row in rows:
   <tr>
-  %for col in row:
-    <td>{{col}}</td>
-  %end
+    <td align='left'><a href="/user?username={{row[0]}}">{{row[0]}}</a></td>
+    <td align='left'>{{row[1]}}</td>
+    <td align='left'>{{row[2]}}</td>
   </tr>
 %end
 </table>
@@ -77,4 +77,10 @@
 </div>
 </div>
 </div>
+<script type="text/javascript">
+function submitform()
+{
+  document.userForm.submit();
+}
+</script>
 % include('footer.tpl')

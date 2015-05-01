@@ -1,15 +1,15 @@
 % include('header.tpl')
         <li><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+	<li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
-        <li class="dropdown">
+        <li class="dropdown active">
           <a href="/payouts" class="dropdown-toggle" data-toggle="dropdown">
             Payout Data<b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
             <li><a href="/payouts">Payouts</a></li>
-			<li><a href="/unpaid">Unpaid</a></li>
+			<li class="active"><a href="/unpaid">Unpaid</a></li>
 			<li><a href="/paid">Paid</a></li>        
           </ul>
         </li>
@@ -33,7 +33,7 @@
   <div class="text-center">
 	<div class="page-header">
 		<h1>Unpaid Transactions:</h1>
-		<h4>Total Unpaid: <small>{{unpaid}} NHZ</small></h4>
+		<h4>Total Unpaid: <small>{{unpaid}} HZ</small></h4>
 	</div>
 </div>
 <div class="table-responsive">
@@ -61,7 +61,11 @@ $(document).ready(function() {
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            $('td:eq(1)', nRow).html('<a href="/user?username=' + aData.account + '">' + aData.account + '</a>');
+        return nRow;
+	}
     } );
 } );
 </script>

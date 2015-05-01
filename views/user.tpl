@@ -1,6 +1,6 @@
 % include('header.tpl')
         <li><a href="/">Home</a></li>
-        <li><a href="/getting_started">Getting Started</a></li>
+	<li><a href="/getting_started">Getting Started</a></li>
         <li><a href="/accounts">Accounts</a></li>
         <li><a href="/blocks">Blocks</a></li>
         <li class="dropdown">
@@ -32,12 +32,15 @@
   
   <div class="text-center">
 	<div class="page-header">
-		<h1>{{aid}}<p><small>{{user}}</small></p></h1>
+		<h1>{{user}}</h1>
 	</div>
-
 <div class="row">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Paid <small>{{paid}}</small></h3>
+%if paid :
+  <h3>Paid <small>{{paid}} HZ</small></h3>
+%else :
+  <h3>Paid <small>0 HZ</small></h3>
+%end
   <div class="table-responsive">
   <table id="paid" class="display" cellspacing="0" width="100%">
         <thead>
@@ -49,6 +52,7 @@
         </thead>
         
     </table>
+%if paid :
 <script>
 $(document).ready(function() {
     $('#paid').dataTable( {
@@ -62,14 +66,21 @@ $(document).ready(function() {
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]
     } );
 } );
 </script>
+%end
 </div>
-  </div>
-  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-  <h3>Unpaid <small>{{unpaid}}</small></h3>
+</div>
+
+
+<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+%if unpaid : 
+  <h3>Unpaid <small>{{unpaid}} HZ</small></h3>
+%else :
+  <h3>Unpaid <small>0 HZ</small></h3>
+%end
     <div class="table-responsive">
 	<table id="unpaid" class="display" cellspacing="0" width="100%">
         <thead>
@@ -81,6 +92,7 @@ $(document).ready(function() {
         </thead>
         
     </table>
+%if unpaid :
 <script>
 $(document).ready(function() {
     $('#unpaid').dataTable( {
@@ -94,12 +106,14 @@ $(document).ready(function() {
             { "data": "amount" }
         ],
         "order": [[ 0, "desc" ]],
-        "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]]    
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]]    
    } );
 } );
 </script>
+%end
 </div>
 </div>
+
 </div>
 </div>  
 </div>
